@@ -8,7 +8,7 @@ body::-webkit-scrollbar {
 }
 
 .gradient-bg {
-  background: linear-gradient(150deg, #668e7e 0%, #0e5037 100%);
+  background: orange;
 }
 
 /* Navigation Bar Styles */
@@ -182,3 +182,4 @@ html {
 .her{
   margin-top: -75px;
 }
+
