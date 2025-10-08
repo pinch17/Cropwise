@@ -12,8 +12,8 @@
 }
 
 [data-theme="dark"] {
-  --bg-primary: blue;
-  --bg-secondary: #1f2937;
+  --bg-primary:  #111827;
+  --bg-secondary: blue;
   --text-primary: #f9fafb;
   --text-secondary: #d1d5db;
   --border-color: #374151;
@@ -748,3 +748,4 @@ body::-webkit-scrollbar {
       background-color: #374151;
 
     }
+
