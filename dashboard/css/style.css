@@ -12,7 +12,7 @@
 }
 
 [data-theme="dark"] {
-  --bg-primary: #111827;
+  --bg-primary: blue;
   --bg-secondary: #1f2937;
   --text-primary: #f9fafb;
   --text-secondary: #d1d5db;
@@ -746,4 +746,5 @@ body::-webkit-scrollbar {
 
     [data-theme="dark"] .formatted-message code {
       background-color: #374151;
+
     }
