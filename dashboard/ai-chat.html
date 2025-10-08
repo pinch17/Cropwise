@@ -1,0 +1,1119 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CropWise AI Chat Support - Smart Farming Assistant</title>
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+  <!-- External Libraries -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <style>
+    /* Theme toggle styles */
+    .theme-toggle {
+      position: relative;
+      width: 50px;
+      height: 30px;
+      background: #374151;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .theme-toggle.active {
+      background: #10b981;
+    }
+
+    .theme-toggle::before {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s ease;
+    }
+
+    .theme-toggle.active::before {
+      transform: translateX(21px);
+    }
+
+    .theme-icon {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      transition: opacity 0.3s ease;
+      pointer-events: none;
+    }
+
+    .sun-icon {
+      left: 6px;
+      color: #e7f5ef;
+      opacity: 0;
+
+    }
+
+    .moon-icon {
+      right: 0px;
+      opacity: 1;
+      color: #fbbf24;
+    }
+
+    .theme-toggle.active .sun-icon {
+      opacity: 0;
+    }
+
+    .theme-toggle.active .moon-icon {
+      opacity: 0;
+    }
+
+    /* Typing indicator */
+    .typing-indicator {
+      display: flex;
+      align-items: center;
+      padding: 8px 12px;
+    }
+
+    .typing-indicator span {
+      height: 8px;
+      width: 8px;
+      background-color: #10B981;
+      border-radius: 50%;
+      display: inline-block;
+      margin: 0 2px;
+      animation: typing 1.4s infinite ease-in-out;
+    }
+
+    .typing-indicator span:nth-child(1) {
+      animation-delay: 0s;
+    }
+
+    .typing-indicator span:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-indicator span:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typing {
+
+      0%,
+      60%,
+      100% {
+        transform: translateY(0);
+      }
+
+      30% {
+        transform: translateY(-10px);
+      }
+    }
+
+    /* Conversation list styles */
+    .conversation-list {
+      max-height: 400px;
+      overflow-y: auto;
+    }
+
+    .conversation-item {
+      padding: 10px;
+      border-bottom: 1px solid #e5e7eb;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .conversation-item:hover {
+      background-color: #f3f4f6;
+    }
+
+    .conversation-item.active {
+      background-color: #e5f3f0;
+      border-left: 3px solid #10b981;
+    }
+
+    [data-theme="dark"] .conversation-item {
+      border-bottom-color: #374151;
+    }
+
+    [data-theme="dark"] .conversation-item:hover {
+      background-color: #374151;
+    }
+
+    [data-theme="dark"] .conversation-item.active {
+      background-color: #1e3a2e;
+    }
+
+    /* Formatted message styles */
+    .formatted-message {
+      line-height: 1.6;
+    }
+
+    .formatted-message h1,
+    .formatted-message h2,
+    .formatted-message h3 {
+      margin-top: 1rem;
+      margin-bottom: 0.5rem;
+      font-weight: 600;
+    }
+
+    .formatted-message h1 {
+      font-size: 1.5rem;
+    }
+
+    .formatted-message h2 {
+      font-size: 1.25rem;
+    }
+
+    .formatted-message h3 {
+      font-size: 1.1rem;
+    }
+
+    .formatted-message p {
+      margin-bottom: 0.75rem;
+    }
+
+    .formatted-message ul,
+    .formatted-message ol {
+      margin-left: 1.5rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .formatted-message li {
+      margin-bottom: 0.25rem;
+    }
+
+    .formatted-message strong,
+    .formatted-message b {
+      font-weight: 600;
+    }
+
+    .formatted-message em,
+    .formatted-message i {
+      font-style: italic;
+    }
+
+    .formatted-message code {
+      background-color: #f3f4f6;
+      padding: 0.125rem 0.25rem;
+      border-radius: 0.25rem;
+      font-family: monospace;
+    }
+
+    [data-theme="dark"] .formatted-message code {
+      background-color: #374151;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Splash Screen -->
+  <!-- <div id="splash-screen" class="splash-screen">
+    <div class="splash-content">
+      <div class="logo">CropWise</div>
+      <div class="loading-spinner"></div>
+    </div>
+  </div> -->
+
+  <!-- Include sidebar and header from index.html -->
+
+  <!-- Include Navigation -->
+  <div id="navigation-container"></div>
+
+  <!-- Main Content -->
+  <div class="lg:ml-64 main-content">
+
+    <!-- Include Mobile Header -->
+    <div id="mobile-header-container"></div>
+
+    <!-- Include Desktop Header -->
+    <div id="desktop-header-container"></div>
+
+    <!-- Page Content -->
+    <main class="p-6 mobile-header-spacing lg:pt-6">
+      <div class="content-section">
+        <div class="card-bg rounded-xl shadow-sm border border-primary"
+          style="height: 600px; display: flex; flex-direction: column;">
+          <!-- Chat Header -->
+          <div class="p-4 border-b border-primary flex justify-between items-center">
+            <div class="flex items-center">
+              <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center mr-3">
+                <i class="fas fa-robot text-white"></i>
+              </div>
+              <div>
+                <h3 class="font-semibold text-primary">CropWise AI Expert</h3>
+                <p class="text-sm text-green-600">Online - Ready to help with your crops</p>
+              </div>
+            </div>
+            <div class="flex items-center space-x-2">
+              <button id="conversation-list-btn" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                <i class="fas fa-history text-gray-600 dark:text-gray-300"></i>
+              </button>
+              <button id="new-chat-btn" class="p-2 rounded-lg hover:bg-gray-200 dark:hover:bg-gray-700">
+                <i class="fas fa-plus text-gray-600 dark:text-gray-300"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Conversation List (Hidden by default) -->
+          <div id="conversation-list" class="hidden p-4 border-b border-primary">
+            <h4 class="font-semibold text-primary mb-2">Previous Conversations</h4>
+            <div id="conversation-items" class="conversation-list">
+              <!-- Conversation items will be added here dynamically -->
+            </div>
+          </div>
+
+          <!-- Chat Messages -->
+          <div id="chat-messages" class="flex-1 p-4 overflow-y-auto scrollbar-hide">
+            <div class="chat-bubble mb-4">
+              <div class="flex items-start">
+                <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3 mt-1 boty">
+                  <i class="fas fa-robot botx text-white text-xs"></i>
+                </div>
+                <div class="bg-secondary rounded-lg p-0 max-w-xs">
+                  <p class="text-sm text-primary">Hello! I'm your CropWise AI assistant. I can help you with cabbage and
+                    kale farming questions. What would you like to know?</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick Questions -->
+          <div class="p-4 border-t border-primary">
+            <p class="text-sm text-secondary mb-2">Quick questions:</p>
+            <div class="flex flex-wrap gap-2 mb-3">
+              <button class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs hover:bg-green-200"
+                onclick="sendQuickMessage('Why are my cabbage leaves turning yellow?')">
+                Yellowing leaves?
+              </button>
+              <button class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs hover:bg-blue-200"
+                onclick="sendQuickMessage('When should I harvest my kale?')">
+                Harvest timing?
+              </button>
+              <button class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs hover:bg-purple-200"
+                onclick="sendQuickMessage('How to prevent black rot?')">
+                Disease prevention?
+              </button>
+            </div>
+
+            <!-- Chat Input - Fixed Responsive Layout -->
+            <div class="chat-input-container">
+              <input type="text" id="chat-input" placeholder="Ask me anything about cabbage and kale farming..."
+                class="p-3 border border-primary rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-primary text-primary">
+              <button id="voice-btn" class="bg-secondary text-secondary rounded-lg hover:bg-gray-300">
+                <i class="fas fa-microphone"></i>
+              </button>
+              <button id="send-btn" class="bg-green-600 text-white rounded-lg hover:bg-green-700">
+                <i class="fas fa-paper-plane"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Firebase Configuration -->
+  <script src="js/firebase-config.js"></script>
+
+  <!-- Common JavaScript -->
+  <script src="js/common.js"></script>
+
+  <!-- Google Generative AI SDK -->
+  <script type="module">
+    import { GoogleGenerativeAI } from "https://cdn.skypack.dev/@google/generative-ai";
+
+    // Make GoogleGenerativeAI available globally
+    window.GoogleGenerativeAI = GoogleGenerativeAI;
+
+    // Dispatch a custom event to notify that the library is loaded
+    window.dispatchEvent(new Event('google-ai-loaded'));
+  </script>
+
+  <!-- Page-specific JavaScript -->
+  <script>
+    // ===============================================
+    // AI CHAT PAGE SPECIFIC JAVASCRIPT
+    // ===============================================
+
+    // Gemini API Configuration
+    const GEMINI_API_KEY = "AIzaSyBR0U2VVIRUklo27jPeZhxGMTE7axxgRZE";
+
+    // Preprompt for the AI
+    const AI_PREPROMPT = `You are an experienced kale and cabbage farmer from Kenya with deep knowledge of local farming conditions, techniques, and challenges. You only provide information about cabbage and kale farming in Kenya. Your responses should be detailed, practical, and specific to the Kenyan context. Include information about:
+
+1. Local climate considerations (Kenyan highlands, coastal regions, etc.)
+2. Common pests and diseases in Kenya and local solutions
+3. Kenyan market conditions and pricing
+4. Local seed varieties that perform well in Kenya
+5. Traditional and modern farming practices used in Kenya
+6. Seasonal planting and harvesting calendars for Kenya
+7. Soil management specific to Kenyan soil types
+8. Water conservation techniques relevant to Kenyan conditions
+
+Always provide detailed, actionable advice that a Kenyan farmer can implement immediately. If asked about topics unrelated to cabbage or kale farming in Kenya, politely redirect the conversation back to your area of expertise.`;
+
+    // Initialize Google Generative AI
+    let genAI;
+    let isAILoaded = false;
+
+    // Conversation management
+    let currentConversationId = null;
+    let conversationHistory = [];
+    let conversations = [];
+
+    // Function to initialize the AI model
+    function initializeAI() {
+      try {
+        if (typeof GoogleGenerativeAI !== 'undefined') {
+          genAI = new GoogleGenerativeAI(GEMINI_API_KEY);
+          isAILoaded = true;
+          console.log("Google Generative AI initialized successfully");
+          return true;
+        } else {
+          console.error("GoogleGenerativeAI is not available");
+          return false;
+        }
+      } catch (error) {
+        console.error("Error initializing Google Generative AI:", error);
+        return false;
+      }
+    }
+
+    // Listen for the custom event that indicates the library is loaded
+    window.addEventListener('google-ai-loaded', function () {
+      console.log("Google AI library loaded");
+      initializeAI();
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+      // Try to initialize AI immediately
+      if (!initializeAI()) {
+        // If it fails, wait for the library to load
+        console.log("Waiting for Google AI library to load...");
+      }
+
+      // Setup conversation management
+      setupConversationManagement();
+
+      // Load chat history
+      loadChatHistory();
+
+      // Setup chat input
+      setupChatInput();
+
+      // Setup voice input
+      setupVoiceInput();
+    });
+
+    function setupConversationManagement() {
+      const newChatBtn = document.getElementById("new-chat-btn");
+      const conversationListBtn = document.getElementById("conversation-list-btn");
+      const conversationList = document.getElementById("conversation-list");
+
+      if (newChatBtn) {
+        newChatBtn.addEventListener("click", startNewConversation);
+      }
+
+      if (conversationListBtn) {
+        conversationListBtn.addEventListener("click", toggleConversationList);
+      }
+
+      // Load conversations
+      loadConversations();
+    }
+
+    function startNewConversation() {
+      // Save current conversation if it has messages
+      if (conversationHistory.length > 0) {
+        saveConversation();
+      }
+
+      // Reset conversation
+      currentConversationId = generateConversationId();
+      conversationHistory = [];
+
+      // Clear chat messages
+      const chatMessages = document.getElementById("chat-messages");
+      if (chatMessages) {
+        chatMessages.innerHTML = `
+          <div class="chat-bubble mb-4">
+            <div class="flex items-start">
+              <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3 mt-1 boty">
+                <i class="fas fa-robot botx text-white text-xs"></i>
+              </div>
+              <div class="bg-secondary rounded-lg p-0 max-w-xs">
+                <p class="text-sm text-primary">Hello! I'm your CropWise AI assistant. I can help you with cabbage and
+                  kale farming questions. What would you like to know?</p>
+              </div>
+            </div>
+          </div>
+        `;
+      }
+
+      // Hide conversation list
+      const conversationList = document.getElementById("conversation-list");
+      if (conversationList) {
+        conversationList.classList.add("hidden");
+      }
+    }
+
+    function toggleConversationList() {
+      const conversationList = document.getElementById("conversation-list");
+      if (conversationList) {
+        conversationList.classList.toggle("hidden");
+
+        // If showing the list, refresh it
+        if (!conversationList.classList.contains("hidden")) {
+          loadConversations();
+        }
+      }
+    }
+
+    function generateConversationId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    function loadConversations() {
+      const userData = getCurrentUserData();
+      if (!userData) return;
+
+      const emailKey = userData.email.replace(/\./g, "_");
+      const conversationItems = document.getElementById("conversation-items");
+
+      if (!conversationItems) return;
+
+      // Clear existing items
+      conversationItems.innerHTML = "";
+
+      // Load conversations from Firebase
+      database
+        .ref("conversations/" + emailKey)
+        .orderByChild("lastUpdated")
+        .limitToLast(10)
+        .once("value")
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            conversations = [];
+            snapshot.forEach((childSnapshot) => {
+              const conversation = childSnapshot.val();
+              conversation.id = childSnapshot.key;
+              conversations.push(conversation);
+            });
+
+            // Sort by last updated (newest first)
+            conversations.sort((a, b) => new Date(b.lastUpdated) - new Date(a.lastUpdated));
+
+            // Add conversation items to the list
+            conversations.forEach((conversation) => {
+              const conversationItem = document.createElement("div");
+              conversationItem.className = "conversation-item";
+              if (conversation.id === currentConversationId) {
+                conversationItem.classList.add("active");
+              }
+
+              // Format the date
+              const date = new Date(conversation.lastUpdated);
+              const formattedDate = date.toLocaleDateString() + " " + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+              // Get the first user message as the title
+              const title = conversation.title || "New Conversation";
+
+              conversationItem.innerHTML = `
+                <div class="flex justify-between items-center">
+                  <div class="font-medium text-primary">${title}</div>
+                  <div class="text-xs text-secondary">${formattedDate}</div>
+                </div>
+              `;
+
+              conversationItem.addEventListener("click", () => loadConversation(conversation.id));
+              conversationItems.appendChild(conversationItem);
+            });
+          } else {
+            conversationItems.innerHTML = "<div class='text-sm text-secondary p-2'>No previous conversations</div>";
+          }
+        })
+        .catch((error) => {
+          console.error("Error loading conversations:", error);
+          conversationItems.innerHTML = "<div class='text-sm text-red-500 p-2'>Error loading conversations</div>";
+        });
+    }
+
+    function loadConversation(conversationId) {
+      const userData = getCurrentUserData();
+      if (!userData) return;
+
+      const emailKey = userData.email.replace(/\./g, "_");
+
+      // Save current conversation if it has messages
+      if (conversationHistory.length > 0 && conversationId !== currentConversationId) {
+        saveConversation();
+      }
+
+      // Set current conversation ID
+      currentConversationId = conversationId;
+
+      // Clear chat messages
+      const chatMessages = document.getElementById("chat-messages");
+      if (!chatMessages) return;
+
+      chatMessages.innerHTML = "";
+
+      // Load conversation from Firebase
+      database
+        .ref("conversations/" + emailKey + "/" + conversationId)
+        .once("value")
+        .then((snapshot) => {
+          if (snapshot.exists()) {
+            const conversation = snapshot.val();
+            conversationHistory = conversation.messages || [];
+
+            // Add messages to chat
+            conversationHistory.forEach((message) => {
+              addMessageToChat(message.text, message.isUser, message.id);
+            });
+
+            // Update active state in conversation list
+            const conversationItems = document.querySelectorAll(".conversation-item");
+            conversationItems.forEach(item => {
+              item.classList.remove("active");
+            });
+
+            const activeItem = Array.from(conversationItems).find(item => {
+              return item.getAttribute("data-conversation-id") === conversationId;
+            });
+
+            if (activeItem) {
+              activeItem.classList.add("active");
+            }
+
+            // Hide conversation list
+            const conversationList = document.getElementById("conversation-list");
+            if (conversationList) {
+              conversationList.classList.add("hidden");
+            }
+          }
+        })
+        .catch((error) => {
+          console.error("Error loading conversation:", error);
+          addMessageToChat("Error loading conversation. Please try again.", false);
+        });
+    }
+
+    function saveConversation() {
+      const userData = getCurrentUserData();
+      if (!userData || conversationHistory.length === 0) return;
+
+      const emailKey = userData.email.replace(/\./g, "_");
+
+      // Generate a title from the first user message
+      const title = conversationHistory.find(m => m.isUser)?.text.substring(0, 30) + "..." || "New Conversation";
+
+      // Save conversation to Firebase
+      database
+        .ref("conversations/" + emailKey + "/" + currentConversationId)
+        .set({
+          title: title,
+          messages: conversationHistory,
+          lastUpdated: new Date().toISOString()
+        })
+        .then(() => {
+          console.log("Conversation saved successfully");
+        })
+        .catch((error) => {
+          console.error("Error saving conversation:", error);
+        });
+    }
+
+    function loadChatHistory() {
+      // If we have a current conversation ID, load it
+      if (currentConversationId) {
+        loadConversation(currentConversationId);
+      } else {
+        // Start a new conversation
+        startNewConversation();
+      }
+    }
+
+    function setupChatInput() {
+      const chatInput = document.getElementById("chat-input");
+      const sendBtn = document.getElementById("send-btn");
+
+      if (!chatInput || !sendBtn) return;
+
+      // Send message on button click
+      sendBtn.addEventListener("click", sendMessage);
+
+      // Send message on Enter key
+      chatInput.addEventListener("keypress", (e) => {
+        if (e.key === "Enter") {
+          sendMessage();
+        }
+      });
+    }
+
+    function setupVoiceInput() {
+      const voiceBtn = document.getElementById("voice-btn");
+      if (!voiceBtn) return;
+
+      voiceBtn.addEventListener("click", () => {
+        if ("webkitSpeechRecognition" in window) {
+          const recognition = new webkitSpeechRecognition();
+          recognition.continuous = false;
+          recognition.interimResults = false;
+          recognition.lang = "en-US";
+
+          recognition.start();
+          voiceBtn.innerHTML = '<i class="fas fa-microphone text-red-600"></i>';
+
+          recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            const chatInput = document.getElementById("chat-input");
+            if (chatInput) {
+              chatInput.value = transcript;
+            }
+            voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+          };
+
+          recognition.onerror = () => {
+            voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+          };
+        } else {
+          alert("Speech recognition not supported in this browser");
+        }
+      });
+    }
+
+    function sendMessage() {
+      const chatInput = document.getElementById("chat-input");
+      if (!chatInput) return;
+
+      const message = chatInput.value.trim();
+      if (!message) return;
+
+      // Add user message to chat
+      addMessageToChat(message, true);
+
+      // Clear input
+      chatInput.value = "";
+
+      // Add message to conversation history
+      const messageId = generateMessageId();
+      conversationHistory.push({
+        id: messageId,
+        text: message,
+        isUser: true,
+        timestamp: new Date().toISOString()
+      });
+
+      // Show typing indicator
+      showTypingIndicator();
+
+      // Get AI response
+      getAIResponse(message)
+        .then(response => {
+          // Remove typing indicator
+          removeTypingIndicator();
+
+          // Add AI response to chat
+          addMessageToChat(response, false);
+
+          // Add AI response to conversation history
+          const responseId = generateMessageId();
+          conversationHistory.push({
+            id: responseId,
+            text: response,
+            isUser: false,
+            timestamp: new Date().toISOString()
+          });
+
+          // Save conversation
+          saveConversation();
+        })
+        .catch(error => {
+          // Remove typing indicator
+          removeTypingIndicator();
+
+          // Add error message
+          const errorMessage = "I'm sorry, I'm having trouble responding right now. Please try again later.";
+          addMessageToChat(errorMessage, false);
+
+          // Add error message to conversation history
+          const errorId = generateMessageId();
+          conversationHistory.push({
+            id: errorId,
+            text: errorMessage,
+            isUser: false,
+            timestamp: new Date().toISOString()
+          });
+
+          // Save conversation
+          saveConversation();
+
+          console.error("Error getting AI response:", error);
+        });
+    }
+
+    function sendQuickMessage(message) {
+      // Add user message to chat
+      addMessageToChat(message, true);
+
+      // Add message to conversation history
+      const messageId = generateMessageId();
+      conversationHistory.push({
+        id: messageId,
+        text: message,
+        isUser: true,
+        timestamp: new Date().toISOString()
+      });
+
+      // Show typing indicator
+      showTypingIndicator();
+
+      // Get AI response
+      getAIResponse(message)
+        .then(response => {
+          // Remove typing indicator
+          removeTypingIndicator();
+
+          // Add AI response to chat
+          addMessageToChat(response, false);
+
+          // Add AI response to conversation history
+          const responseId = generateMessageId();
+          conversationHistory.push({
+            id: responseId,
+            text: response,
+            isUser: false,
+            timestamp: new Date().toISOString()
+          });
+
+          // Save conversation
+          saveConversation();
+        })
+        .catch(error => {
+          // Remove typing indicator
+          removeTypingIndicator();
+
+          // Add error message
+          const errorMessage = "I'm sorry, I'm having trouble responding right now. Please try again later.";
+          addMessageToChat(errorMessage, false);
+
+          // Add error message to conversation history
+          const errorId = generateMessageId();
+          conversationHistory.push({
+            id: errorId,
+            text: errorMessage,
+            isUser: false,
+            timestamp: new Date().toISOString()
+          });
+
+          // Save conversation
+          saveConversation();
+
+          console.error("Error getting AI response:", error);
+        });
+    }
+
+    function generateMessageId() {
+      return Date.now().toString(36) + Math.random().toString(36).substr(2);
+    }
+
+    async function getAIResponse(userMessage) {
+      try {
+        // Ensure genAI is initialized
+        if (!isAILoaded || !genAI) {
+          // Try to initialize again
+          if (!initializeAI()) {
+            throw new Error("Google Generative AI is not available. Please refresh the page and try again.");
+          }
+        }
+
+        // Get the model - using gemini-1.5-flash which is the correct model name
+        const model = genAI.getGenerativeModel({ model: "gemini-2.0-flash" });
+
+        // Prepare conversation history for context
+        let conversationContext = "";
+        if (conversationHistory.length > 0) {
+          // Include the last 6 messages (3 pairs) for context
+          const recentHistory = conversationHistory.slice(-6);
+          recentHistory.forEach(msg => {
+            conversationContext += msg.isUser ? `User: ${msg.text}\n` : `Assistant: ${msg.text}\n`;
+          });
+        }
+
+        // Generate content with the preprompt, conversation context, and user message
+        const prompt = `${AI_PREPROMPT}\n\n${conversationContext}User: ${userMessage}\n\nAssistant:`;
+        const result = await model.generateContent(prompt);
+        const response = await result.response;
+        const text = response.text();
+
+        return text.trim();
+      } catch (error) {
+        console.error("Error calling Gemini API:", error);
+        throw error;
+      }
+    }
+
+    function showTypingIndicator() {
+      const chatMessages = document.getElementById("chat-messages");
+      if (!chatMessages) return;
+
+      const typingDiv = document.createElement("div");
+      typingDiv.className = "chat-bubble mb-4";
+      typingDiv.id = "typing-indicator";
+
+      typingDiv.innerHTML = `
+        <div class="flex items-start">
+          <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3 mt-1 boty">
+            <i class="fas fa-robot botx text-white text-xs"></i>
+          </div>
+          <div class="bg-secondary rounded-lg p-3 max-w-xs">
+            <div class="typing-indicator">
+              <span></span>
+              <span></span>
+              <span></span>
+            </div>
+          </div>
+        </div>
+      `;
+
+      chatMessages.appendChild(typingDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function removeTypingIndicator() {
+      const typingIndicator = document.getElementById("typing-indicator");
+      if (typingIndicator) {
+        typingIndicator.remove();
+      }
+    }
+
+    function addMessageToChat(message, isUser, messageId) {
+      const chatMessages = document.getElementById("chat-messages");
+      if (!chatMessages) return;
+
+      const messageDiv = document.createElement("div");
+      messageDiv.className = "chat-bubble mb-4";
+      messageDiv.id = messageId || "";
+
+      if (isUser) {
+        messageDiv.innerHTML = `
+          <div class="flex items-start justify-end">
+            <div class="bg-green-600 text-white rounded-lg p-3 max-w-xs">
+              <p class="text-sm">${message}</p>
+            </div>
+            <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center ml-3 mt-1">
+              <i class="fas fa-user text-gray-600 text-xs"></i>
+            </div>
+          </div>
+        `;
+      } else {
+        // Format the AI response for better readability
+        const formattedMessage = formatAIResponse(message);
+
+        messageDiv.innerHTML = `
+          <div class="flex items-start">
+            <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3 mt-1 boty">
+              <i class="fas fa-robot botx text-white text-xs"></i>
+            </div>
+            <div class="bg-secondary rounded-lg p-3 max-w-xs">
+              <div class="text-sm text-primary formatted-message">${formattedMessage}</div>
+            </div>
+          </div>
+        `;
+      }
+
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function formatAIResponse(message) {
+      // Replace markdown-style formatting with HTML
+      let formatted = message
+        // Convert **bold** to <strong>
+        .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+        // Convert *italic* to <em>
+        .replace(/\*(.*?)\*/g, '<em>$1</em>')
+        // Convert headers (### Header) to <h3>
+        .replace(/### (.*?)(\n|$)/g, '<h3>$1</h3>')
+        // Convert headers (## Header) to <h2>
+        .replace(/## (.*?)(\n|$)/g, '<h2>$1</h2>')
+        // Convert headers (# Header) to <h1>
+        .replace(/# (.*?)(\n|$)/g, '<h1>$1</h1>')
+        // Convert bullet points (* item) to <ul><li>
+        .replace(/\* (.*?)(\n|$)/g, '<li>$1</li>')
+        // Convert numbered lists (1. item) to <ol><li>
+        .replace(/\d+\. (.*?)(\n|$)/g, '<li>$1</li>')
+        // Convert double newlines to paragraph breaks
+        .replace(/\n\n/g, '</p><p>')
+        // Convert single newlines to line breaks
+        .replace(/\n/g, '<br>');
+
+      // Wrap in paragraphs if not already wrapped
+      if (!formatted.startsWith('<p>')) {
+        formatted = `<p>${formatted}</p>`;
+      }
+
+      // Wrap bullet points in ul tags
+      formatted = formatted.replace(/(<li>.*?<\/li>)/s, '<ul>$1</ul>');
+
+      // Wrap numbered points in ol tags
+      formatted = formatted.replace(/(<li>.*?<\/li>)/s, '<ol>$1</ol>');
+
+      return formatted;
+    }
+
+    function saveMessageToChat(message, isUser) {
+      // This function is now handled by the conversation management
+      // Keeping it for compatibility with other parts of the code
+      const userData = getCurrentUserData();
+      if (!userData) return;
+
+      const emailKey = userData.email.replace(/\./g, "_");
+      const newMessageRef = database.ref("chatHistory/" + emailKey).push();
+
+      newMessageRef
+        .set({
+          text: message,
+          isUser: isUser,
+          timestamp: new Date().toISOString(),
+        })
+        .then(() => {
+          console.log("Message saved to chat history");
+        })
+        .catch((error) => {
+          console.error("Error saving message to chat history:", error);
+        });
+    }
+
+        // Theme toggle functionality
+          function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+            const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+            // Apply theme to document
+            document.documentElement.setAttribute("data-theme", newTheme);
+
+            // Update toggle state for both mobile and desktop
+            const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+            const desktopThemeToggle = document.getElementById('desktop-theme-toggle');
+
+            if (mobileThemeToggle) {
+              void mobileThemeToggle.offsetWidth; // Force reflow
+              if (newTheme === "dark") {
+                mobileThemeToggle.classList.add("active");
+              } else {
+                mobileThemeToggle.classList.remove("active");
+              }
+            }
+
+            if (desktopThemeToggle) {
+              void desktopThemeToggle.offsetWidth; // Force reflow
+              if (newTheme === "dark") {
+                desktopThemeToggle.classList.add("active");
+              } else {
+                desktopThemeToggle.classList.remove("active");
+              }
+            }
+
+            // Save to localStorage
+            localStorage.setItem("theme", newTheme);
+
+            // Save to Firebase if user is logged in
+            const userData = getCurrentUserData();
+            if (userData) {
+              const emailKey = userData.email.replace(/\./g, "_");
+              database.ref("users/" + emailKey).update({ theme: newTheme })
+                .then(() => console.log("Theme saved to Firebase:", newTheme))
+                .catch(error => console.error("Error saving theme to Firebase:", error));
+            }
+          }
+
+          // Get current user data
+          function getCurrentUserData() {
+            try {
+              const userData = localStorage.getItem("userData");
+              return userData ? JSON.parse(userData) : null;
+            } catch (e) {
+              return null;
+            }
+          }
+
+          // Load components
+          document.addEventListener('DOMContentLoaded', function () {
+            // Load navigation
+            fetch('navigation.html')
+              .then(response => response.text())
+              .then(html => {
+                document.getElementById('navigation-container').innerHTML = html;
+              });
+
+            // Load mobile header
+            fetch('mobile-header.html')
+              .then(response => response.text())
+              .then(html => {
+                document.getElementById('mobile-header-container').innerHTML = html;
+
+                // Initialize mobile theme toggle after loading
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+                if (mobileThemeToggle) {
+                  void mobileThemeToggle.offsetWidth; // Force reflow
+                  if (savedTheme === 'dark') {
+                    mobileThemeToggle.classList.add('active');
+                  } else {
+                    mobileThemeToggle.classList.remove('active');
+                  }
+
+                  mobileThemeToggle.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    toggleTheme();
+                  });
+                }
+              });
+
+            // Load desktop header
+            fetch('desktop-header.html')
+              .then(response => response.text())
+              .then(html => {
+                document.getElementById('desktop-header-container').innerHTML = html;
+
+                // Initialize desktop theme toggle after loading
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                const desktopThemeToggle = document.getElementById('desktop-theme-toggle');
+                if (desktopThemeToggle) {
+                  void desktopThemeToggle.offsetWidth; // Force reflow
+                  if (savedTheme === 'dark') {
+                    desktopThemeToggle.classList.add('active');
+                  } else {
+                    desktopThemeToggle.classList.remove('active');
+                  }
+
+                  desktopThemeToggle.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    toggleTheme();
+                  });
+                }
+              });
+          });
+
+   
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CropWise - Smart Farming Assistant</title>
+
+  <!-- Theme initialization script -->
+  <script>
+    // Immediately apply saved theme before page renders
+    (function () {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+  </script>
+
+  <style>
+    /* Reset and base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Outfit', sans-serif;
+    }
+
+    body {
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden;
+      transition: background-color 0.5s ease;
+    }
+
+    /* Light theme */
+    :root {
+      --bg-color: #ffffff;
+      --text-color: #111827;
+      --accent-color: #10b981;
+      --secondary-text: #6b7280;
+    }
+
+    /* Dark theme */
+    [data-theme="dark"] {
+      --bg-color: #111827;
+      --text-color: #f9fafb;
+      --accent-color: #10b981;
+      --secondary-text: #d1d5db;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-color);
+    }
+
+    /* Splash container */
+    .splash-container {
+      text-align: center;
+      animation: fadeIn 1s ease-in-out;
+    }
+
+    /* Logo and icon */
+    .logo-container {
+      margin-bottom: 2rem;
+    }
+
+    .logo-icon {
+      font-size: 4rem;
+      color: var(--accent-color);
+      margin-bottom: 1rem;
+      animation: pulse 2s infinite;
+    }
+
+    .logo-text {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--text-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .tagline {
+      font-size: 1.2rem;
+      color: var(--secondary-text);
+      margin-bottom: 3rem;
+    }
+
+    /* Loading bar */
+    .loading-container {
+      width: 200px;
+      height: 4px;
+      background-color: var(--bg-color);
+      border: 1px solid var(--secondary-text);
+      border-radius: 2px;
+      overflow: hidden;
+      margin: 0 auto;
+    }
+
+    .loading-bar {
+      height: 100%;
+      width: 0;
+      background-color: var(--accent-color);
+      border-radius: 2px;
+      animation: loading 2s ease-in-out infinite;
+    }
+
+    /* Status text */
+    .status-text {
+      margin-top: 2rem;
+      font-size: 1rem;
+      color: var(--secondary-text);
+    }
+
+    /* Animations */
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes pulse {
+      0% {
+        transform: scale(1);
+      }
+
+      50% {
+        transform: scale(1.1);
+      }
+
+      100% {
+        transform: scale(1);
+      }
+    }
+
+    @keyframes loading {
+      0% {
+        width: 0;
+        margin-left: 0;
+      }
+
+      50% {
+        width: 75%;
+        margin-left: 25%;
+      }
+
+      100% {
+        width: 0;
+        margin-left: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="splash-container">
+    <div class="logo-container">
+      <i class="fas fa-seedling logo-icon"></i>
+      <h1 class="logo-text">CropWise</h1>
+      <p class="tagline">Smart Farming Assistant</p>
+    </div>
+
+    <div class="loading-container">
+      <div class="loading-bar"></div>
+    </div>
+
+    <p class="status-text">Loading your dashboard...</p>
+  </div>
+
+  <script>
+    // Check if user is logged in
+    function checkAuthStatus() {
+      return new Promise((resolve) => {
+        const unsubscribe = firebase.auth().onAuthStateChanged(user => {
+          unsubscribe(); // Unsubscribe immediately after first call
+
+          if (user) {
+            // User is logged in, redirect to dashboard
+            resolve('dashboard.html');
+          } else {
+            // User is not logged in, redirect to login
+            resolve('login.html');
+          }
+        });
+      });
+    }
+
+    // Initialize Firebase and check auth status
+    document.addEventListener('DOMContentLoaded', function () {
+      // Initialize Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyBBnATkRmwJewIXE2uyEIdXnRgDKk7ZWZo",
+        authDomain: "cropwise-a6d60.firebaseapp.com",
+        databaseURL: "https://cropwise-a6d60-default-rtdb.firebaseio.com",
+        projectId: "cropwise-a6d60",
+        storageBucket: "cropwise-a6d60.firebasestorage.app",
+        messagingSenderId: "80875044021",
+        appId: "1:80875044021:web:357a754606a08d960cd2fc",
+        measurementId: "G-4NHH2DDBVV"
+      };
+
+      firebase.initializeApp(firebaseConfig);
+
+      // Check auth status and redirect
+      checkAuthStatus().then(redirectUrl => {
+        // Add a small delay to show the splash screen
+        setTimeout(() => {
+          window.location.href = redirectUrl;
+        }, 2000);
+      });
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,1660 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shamba AI - Smart Farming Platform</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      /* Light theme colors */
+      --bg-primary: linear-gradient(135deg, #065f46 0%, #10b981 50%, #34d399 100%);
+      --bg-secondary: rgba(255, 255, 255, 0.15);
+      --bg-tertiary: rgba(255, 255, 255, 0.2);
+      --text-primary: #ffffff;
+      --text-secondary: #d1fae5;
+      --text-tertiary: #a7f3d0;
+      --border-primary: rgba(255, 255, 255, 0.2);
+      --border-secondary: rgba(255, 255, 255, 0.3);
+      --accent-primary: #10b981;
+      --accent-secondary: #34d399;
+      --shadow-primary: rgba(0, 0, 0, 0.1);
+      --shadow-secondary: rgba(16, 185, 129, 0.25);
+      --particle-color: rgba(255, 255, 255, 0.15);
+      --glassmorphism-bg: rgba(255, 255, 255, 0.15);
+      --glassmorphism-border: rgba(255, 255, 255, 0.2);
+    }
+
+    [data-theme="dark"] {
+      /* Green theme colors */
+      --bg-primary: linear-gradient(135deg, #0a1f0a 0%, #1a2e1a 50%, #2d4a2d 100%);
+      --bg-secondary: rgba(10, 31, 10, 0.8);
+      --bg-tertiary: rgba(26, 46, 26, 0.6);
+      --text-primary: #f0fdf4;
+      --text-secondary: #bbf7d0;
+      --text-tertiary: #86efac;
+      --border-primary: rgba(134, 239, 172, 0.2);
+      --border-secondary: rgba(187, 247, 208, 0.3);
+      --accent-primary: #10b981;
+      --accent-secondary: #059669;
+      --shadow-primary: rgba(0, 0, 0, 0.3);
+      --shadow-secondary: rgba(16, 185, 129, 0.25);
+      --particle-color: rgba(134, 239, 172, 0.1);
+      --glassmorphism-bg: rgba(10, 31, 10, 0.8);
+      --glassmorphism-border: rgba(134, 239, 172, 0.2);
+    }
+
+    * {
+      font-family: 'Outfit', sans-serif;
+      transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+    }
+
+    /* Hide all scrollbars completely */
+    html {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      overflow-x: hidden;
+      overflow-y: auto;
+    }
+
+    html::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+
+    body {
+      background: var(--bg-primary);
+      min-height: 120vh;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+      overflow-x: hidden;
+      transition: background 0.5s ease;
+    }
+
+    body::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+
+    * {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    *::-webkit-scrollbar {
+      display: none;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
+    *::-webkit-scrollbar-track {
+      display: none;
+    }
+
+    *::-webkit-scrollbar-thumb {
+      display: none;
+    }
+
+    .glassmorphism {
+      background: var(--glassmorphism-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glassmorphism-border);
+      box-shadow: 0 25px 45px var(--shadow-primary);
+      transition: all 0.3s ease;
+    }
+
+    .form-transition {
+      transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .input-focus {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      background: var(--bg-tertiary) !important;
+      border-color: var(--border-secondary) !important;
+      color: var(--text-primary) !important;
+    }
+
+    .input-focus::placeholder {
+      color: var(--text-tertiary) !important;
+    }
+
+    .input-focus:focus {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px var(--shadow-secondary);
+      border-color: var(--accent-primary) !important;
+    }
+
+    .btn-hover {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      overflow: hidden;
+      background: var(--accent-primary) !important;
+      box-shadow: 0 4px 15px var(--shadow-secondary);
+    }
+
+    .btn-hover::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+      transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .btn-hover:hover::before {
+      left: 100%;
+    }
+
+    .btn-hover:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 12px 28px var(--shadow-primary);
+    }
+
+    .floating-animation {
+      animation: float 6s ease-in-out infinite;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-15px);
+      }
+    }
+
+    .slide-in-left {
+      animation: slideInLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .slide-in-right {
+      animation: slideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes slideInLeft {
+      from {
+        opacity: 0;
+        transform: translateX(-60px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    @keyframes slideInRight {
+      from {
+        opacity: 0;
+        transform: translateX(60px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    .logo-glow {
+      filter: drop-shadow(0 0 20px var(--accent-secondary));
+    }
+
+    /* Fixed Success Checkmark Animation */
+    .success-checkmark {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      display: block;
+      stroke-width: 2;
+      stroke: var(--accent-primary);
+      stroke-miterlimit: 10;
+      margin: 20px auto;
+      box-shadow: inset 0px 0px 0px var(--accent-primary);
+      animation: fill 0.4s ease-in-out 0.4s forwards, scale 0.3s ease-in-out 0.9s both;
+      opacity: 1;
+      transform: scale(1);
+    }
+
+    .success-checkmark-circle {
+      stroke-dasharray: 166;
+      stroke-dashoffset: 166;
+      stroke-width: 2;
+      stroke-miterlimit: 10;
+      stroke: var(--accent-primary);
+      fill: none;
+      animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+    }
+
+    .success-checkmark-check {
+      transform-origin: 50% 50%;
+      stroke-dasharray: 48;
+      stroke-dashoffset: 48;
+      animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+    }
+
+    @keyframes stroke {
+      100% {
+        stroke-dashoffset: 0;
+      }
+    }
+
+    @keyframes fill {
+      100% {
+        box-shadow: inset 0px 0px 0px 60px var(--accent-primary);
+      }
+    }
+
+    @keyframes scale {
+
+      0%,
+      100% {
+        transform: none;
+      }
+
+      50% {
+        transform: scale3d(1.1, 1.1, 1);
+      }
+    }
+
+    .particles {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      z-index: 0;
+    }
+
+    .particle {
+      position: absolute;
+      background: var(--particle-color);
+      border-radius: 50%;
+      animation: particle-float 15s infinite linear;
+    }
+
+    @keyframes particle-float {
+      0% {
+        transform: translateY(100vh) rotate(0deg);
+        opacity: 1;
+      }
+
+      100% {
+        transform: translateY(-100px) rotate(360deg);
+        opacity: 0;
+      }
+    }
+
+    /* Theme Toggle Button */
+    .theme-toggle {
+      position: fixed;
+      top: 2rem;
+      right: 2rem;
+      z-index: 1000;
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      background: var(--glassmorphism-bg);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--glassmorphism-border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px var(--shadow-primary);
+    }
+
+    .theme-toggle:hover {
+      transform: scale(1.1);
+      box-shadow: 0 12px 35px var(--shadow-secondary);
+    }
+
+    .theme-toggle i {
+      font-size: 1.5rem;
+      color: var(--text-primary);
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle-icon {
+      position: relative;
+    }
+
+    .theme-toggle-icon .fa-sun,
+    .theme-toggle-icon .fa-moon {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      transition: all 0.3s ease;
+    }
+
+    [data-theme="light"] .theme-toggle-icon .fa-sun {
+      opacity: 1;
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    [data-theme="light"] .theme-toggle-icon .fa-moon {
+      opacity: 0;
+      transform: translate(-50%, -50%) rotate(180deg);
+    }
+
+    [data-theme="dark"] .theme-toggle-icon .fa-sun {
+      opacity: 0;
+      transform: translate(-50%, -50%) rotate(-180deg);
+    }
+
+    [data-theme="dark"] .theme-toggle-icon .fa-moon {
+      opacity: 1;
+      transform: translate(-50%, -50%) rotate(0deg);
+    }
+
+    /* Modern Custom Checkbox Styles - FIXED */
+    .custom-checkbox {
+      appearance: none;
+      -webkit-appearance: none;
+      -moz-appearance: none;
+      width: 22px;
+      height: 22px;
+      border: 2px solid var(--border-secondary);
+      border-radius: 6px;
+      background: var(--bg-tertiary);
+      position: relative;
+      cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      flex-shrink: 0;
+      margin: 0;
+      outline: none;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .custom-checkbox:hover {
+      border-color: var(--accent-primary);
+      background: var(--bg-secondary);
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px var(--shadow-secondary);
+    }
+
+    .custom-checkbox:focus {
+      outline: 2px solid var(--accent-primary);
+      outline-offset: 2px;
+    }
+
+    /* Animated checkmark */
+    .custom-checkbox:checked {
+      background: var(--accent-primary);
+      border-color: var(--accent-primary);
+      box-shadow: 0 0 12px var(--shadow-secondary);
+      transform: scale(1.05);
+    }
+
+    .custom-checkbox:checked::after {
+      content: '';
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 5px;
+      height: 10px;
+      border: solid white;
+      border-width: 0 2px 2px 0;
+      transform: translate(-50%, -60%) rotate(45deg);
+      animation: checkmark-appear 0.3s ease-in-out;
+    }
+
+    @keyframes checkmark-appear {
+      0% {
+        opacity: 0;
+        transform: translate(-50%, -60%) rotate(45deg) scale(0);
+      }
+
+      50% {
+        opacity: 1;
+        transform: translate(-50%, -60%) rotate(45deg) scale(1.2);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translate(-50%, -60%) rotate(45deg) scale(1);
+      }
+    }
+
+    /* Perfect checkbox container alignment */
+    .checkbox-container {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+      width: 100%;
+      margin: 12px 0;
+    }
+
+    .checkbox-label {
+      flex: 1;
+      line-height: 1.5;
+      padding-top: 1px;
+      color: var(--text-secondary) !important;
+      cursor: pointer;
+      font-size: 14px;
+    }
+
+    /* Input field with proper icon alignment */
+    .input-group {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .input-group .input-icon {
+      position: absolute;
+      left: 16px;
+      z-index: 10;
+      color: var(--text-tertiary);
+      pointer-events: none;
+      transition: color 0.3s ease;
+    }
+
+    .input-group input {
+      padding-left: 48px !important;
+      padding-right: 16px !important;
+    }
+
+    .input-group .password-toggle {
+      position: absolute;
+      right: 16px;
+      z-index: 10;
+      cursor: pointer;
+      color: var(--text-tertiary);
+      transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .input-group .password-toggle:hover {
+      color: var(--text-primary);
+    }
+
+    .input-group input[type="password"],
+    .input-group input[type="text"].password-field {
+      padding-right: 48px !important;
+    }
+
+    /* Improved Custom Select Dropdown - FIXED VISIBILITY */
+    .custom-select-wrapper {
+      position: relative;
+      width: 100%;
+    }
+
+    .custom-select-trigger {
+      width: 100%;
+      padding: 16px 40px 16px 48px;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border-secondary);
+      border-radius: 12px;
+      color: var(--text-primary);
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      outline: none;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      user-select: none;
+    }
+
+    .custom-select-trigger:hover {
+      background: var(--bg-secondary);
+      border-color: var(--border-primary);
+    }
+
+    .custom-select-trigger.active {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px var(--shadow-secondary);
+      border-color: var(--accent-primary);
+    }
+
+    .custom-select-trigger .placeholder {
+      color: var(--text-tertiary);
+    }
+
+    .custom-select-trigger .selected-text {
+      color: var(--text-primary);
+    }
+
+    .custom-select-arrow {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      pointer-events: none;
+      color: var(--text-tertiary);
+      font-size: 14px;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .custom-select-trigger.active .custom-select-arrow {
+      transform: translateY(-50%) rotate(180deg);
+      color: var(--text-primary);
+    }
+
+    /* FIXED: Improved visibility for dropdown options */
+    .custom-select-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border-secondary);
+      border-radius: 12px;
+      margin-top: 4px;
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transform: translateY(-10px);
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 20px 40px var(--shadow-primary);
+      max-height: 200px;
+      overflow-y: auto;
+    }
+
+    [data-theme="dark"] .custom-select-dropdown {
+      background: rgba(15, 23, 42, 0.95);
+      border: 1px solid var(--border-primary);
+    }
+
+    .custom-select-dropdown.active {
+      opacity: 1;
+      visibility: visible;
+      transform: translateY(0);
+    }
+
+    .custom-select-option {
+      padding: 14px 16px;
+      color: var(--text-primary);
+      cursor: pointer;
+      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      font-weight: 500;
+      background: transparent;
+    }
+
+    [data-theme="dark"] .custom-select-option {
+      color: var(--text-primary);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .custom-select-option:last-child {
+      border-bottom: none;
+    }
+
+    .custom-select-option:hover {
+      background: var(--accent-primary);
+      color: white;
+      transform: translateX(4px);
+    }
+
+    .custom-select-option.selected {
+      background: var(--accent-primary);
+      color: white;
+      font-weight: 600;
+    }
+
+    /* Brand section responsive layout with improved mobile centering */
+    .brand-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      width: 100%;
+    }
+
+    /* Mobile-first approach - ensure text is centered */
+    .mobile-centered-text {
+      text-align: center;
+      width: 100%;
+    }
+
+    .mobile-centered-subtitle {
+      text-align: center;
+      margin: 0 auto;
+      display: block;
+    }
+
+    .mobile-centered-description {
+      text-align: center;
+      margin: 0 auto;
+      max-width: 100%;
+    }
+
+    @media (min-width: 1024px) {
+      .brand-container {
+        flex-direction: row;
+        align-items: center;
+        text-align: left;
+        justify-content: flex-start;
+      }
+
+      .brand-text {
+        margin-left: 0.6rem;
+      }
+
+      .fa-seedling {
+        margin-bottom: 8px;
+        margin-left: -10px;
+      }
+
+      /* On desktop, align text to left */
+      .mobile-centered-text {
+        text-align: left;
+      }
+
+      .mobile-centered-subtitle {
+        text-align: left;
+      }
+
+      .mobile-centered-description {
+        text-align: left;
+      }
+    }
+
+    /* Enhanced toggle buttons with smoother transitions */
+    .toggle-btn-active {
+      background: var(--accent-primary) !important;
+      box-shadow: 0 4px 15px var(--shadow-secondary);
+      transform: scale(1.02);
+      color: white !important;
+    }
+
+    .toggle-btn-inactive {
+      background: transparent !important;
+      transform: scale(1);
+      color: var(--text-primary) !important;
+    }
+
+    /* Text colors for theme switching */
+    .text-primary-themed {
+      color: var(--text-primary) !important;
+    }
+
+    .text-secondary-themed {
+      color: var(--text-secondary) !important;
+    }
+
+    .text-tertiary-themed {
+      color: var(--text-tertiary) !important;
+    }
+
+    /* Smooth transitions for all interactive elements */
+    button,
+    .custom-select-trigger,
+    .custom-checkbox,
+    input {
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    /* Features list styling */
+    .feature-item {
+      color: var(--text-primary);
+      transition: color 0.3s ease;
+    }
+
+    .feature-item i {
+      color: var(--accent-secondary);
+    }
+
+    /* Links styling */
+    .themed-link {
+      color: var(--text-secondary) !important;
+      transition: color 0.3s ease;
+    }
+
+    .themed-link:hover {
+      color: var(--text-primary) !important;
+    }
+
+    /* Enhanced glassmorphism for dark mode */
+    [data-theme="dark"] .glassmorphism {
+      background: rgba(15, 23, 42, 0.9);
+      backdrop-filter: blur(25px);
+      border: 1px solid rgba(148, 163, 184, 0.15);
+    }
+
+    /* Error message styling */
+    .error-message {
+      background: rgba(239, 68, 68, 0.1);
+      border: 1px solid rgba(239, 68, 68, 0.3);
+      color: #ef4444;
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    .success-message {
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--accent-primary);
+      padding: 12px 16px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin-bottom: 16px;
+      display: none;
+    }
+
+    /* Mobile responsiveness for theme toggle */
+    @media (max-width: 768px) {
+      .theme-toggle {
+        top: 1rem;
+        right: 1rem;
+        width: 50px;
+        height: 50px;
+      }
+
+      .theme-toggle i {
+        font-size: 1.2rem;
+      }
+
+      /* Ensure perfect centering on mobile */
+      .slide-in-left {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        width: 100%;
+      }
+
+      .brand-section-mobile {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        width: 100%;
+      }
+    }
+
+    /* Additional mobile text styling */
+    @media (max-width: 767px) {
+      .mobile-text-center {
+        text-align: center !important;
+        display: block;
+        margin: 0 auto;
+      }
+    }
+
+    /* Success Animation Fix */
+    .success-screen {
+      animation: fadeInUp 0.6s ease-out;
+    }
+
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+  </style>
+</head>
+
+<body data-theme="light">
+  <!-- Theme Toggle Button -->
+  <div class="theme-toggle" id="theme-toggle">
+    <div class="theme-toggle-icon">
+      <i class="fas fa-sun"></i>
+      <i class="fas fa-moon"></i>
+    </div>
+  </div>
+
+  <!-- Enhanced Animated Background Particles -->
+  <div class="particles">
+    <!-- Row 1 -->
+    <div class="particle" style="left: 3%; width: 3px; height: 3px; animation-delay: 0s; animation-duration: 28s;">
+    </div>
+    <div class="particle" style="left: 8%; width: 5px; height: 5px; animation-delay: 1s; animation-duration: 25s;">
+    </div>
+    <div class="particle" style="left: 13%; width: 4px; height: 4px; animation-delay: 2s; animation-duration: 30s;">
+    </div>
+    <div class="particle" style="left: 18%; width: 6px; height: 6px; animation-delay: 3s; animation-duration: 22s;">
+    </div>
+    <div class="particle" style="left: 23%; width: 3px; height: 3px; animation-delay: 4s; animation-duration: 27s;">
+    </div>
+    <div class="particle" style="left: 28%; width: 7px; height: 7px; animation-delay: 5s; animation-duration: 24s;">
+    </div>
+    <div class="particle" style="left: 33%; width: 4px; height: 4px; animation-delay: 6s; animation-duration: 29s;">
+    </div>
+    <div class="particle" style="left: 38%; width: 5px; height: 5px; animation-delay: 7s; animation-duration: 21s;">
+    </div>
+    <div class="particle" style="left: 43%; width: 8px; height: 8px; animation-delay: 8s; animation-duration: 26s;">
+    </div>
+    <div class="particle" style="left: 48%; width: 3px; height: 3px; animation-delay: 9s; animation-duration: 23s;">
+    </div>
+
+    <!-- Row 2 -->
+    <div class="particle" style="left: 53%; width: 6px; height: 6px; animation-delay: 10s; animation-duration: 31s;">
+    </div>
+    <div class="particle" style="left: 58%; width: 4px; height: 4px; animation-delay: 11s; animation-duration: 20s;">
+    </div>
+    <div class="particle" style="left: 63%; width: 7px; height: 7px; animation-delay: 12s; animation-duration: 28s;">
+    </div>
+    <div class="particle" style="left: 68%; width: 3px; height: 3px; animation-delay: 13s; animation-duration: 25s;">
+    </div>
+    <div class="particle" style="left: 73%; width: 5px; height: 5px; animation-delay: 14s; animation-duration: 32s;">
+    </div>
+    <div class="particle" style="left: 78%; width: 8px; height: 8px; animation-delay: 15s; animation-duration: 19s;">
+    </div>
+    <div class="particle" style="left: 83%; width: 4px; height: 4px; animation-delay: 16s; animation-duration: 27s;">
+    </div>
+    <div class="particle" style="left: 88%; width: 6px; height: 6px; animation-delay: 17s; animation-duration: 24s;">
+    </div>
+    <div class="particle" style="left: 93%; width: 3px; height: 3px; animation-delay: 18s; animation-duration: 30s;">
+    </div>
+    <div class="particle" style="left: 97%; width: 5px; height: 5px; animation-delay: 19s; animation-duration: 22s;">
+    </div>
+
+    <!-- Row 3 - Additional particles -->
+    <div class="particle" style="left: 2%; width: 7px; height: 7px; animation-delay: 20s; animation-duration: 26s;">
+    </div>
+    <div class="particle" style="left: 12%; width: 4px; height: 4px; animation-delay: 21s; animation-duration: 33s;">
+    </div>
+    <div class="particle" style="left: 22%; width: 6px; height: 6px; animation-delay: 22s; animation-duration: 18s;">
+    </div>
+    <div class="particle" style="left: 32%; width: 3px; height: 3px; animation-delay: 23s; animation-duration: 29s;">
+    </div>
+    <div class="particle" style="left: 42%; width: 8px; height: 8px; animation-delay: 24s; animation-duration: 21s;">
+    </div>
+    <div class="particle" style="left: 52%; width: 5px; height: 5px; animation-delay: 25s; animation-duration: 35s;">
+    </div>
+    <div class="particle" style="left: 62%; width: 4px; height: 4px; animation-delay: 26s; animation-duration: 17s;">
+    </div>
+    <div class="particle" style="left: 72%; width: 7px; height: 7px; animation-delay: 27s; animation-duration: 31s;">
+    </div>
+    <div class="particle" style="left: 82%; width: 3px; height: 3px; animation-delay: 28s; animation-duration: 23s;">
+    </div>
+    <div class="particle" style="left: 92%; width: 6px; height: 6px; animation-delay: 29s; animation-duration: 28s;">
+    </div>
+  </div>
+
+  <div class="min-h-screen flex items-center justify-center px-4 py-8 relative z-10">
+    <div class="max-w-4xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+
+      <!-- Left Side - Branding -->
+      <div class="slide-in-left brand-section-mobile">
+        <div class="mb-8 w-full">
+          <div class="brand-container mb-4">
+            <div class="logo-glow floating-animation">
+              <i class="fas fa-seedling text-5xl text-primary-themed"></i>
+            </div>
+            <div class="brand-text">
+              <h1 class="text-5xl lg:text-6xl font-bold text-primary-themed mb-2 floating-animation mobile-text-center">
+                Shamba AI
+              </h1>
+            </div>
+          </div>
+
+          <p class="text-xl text-secondary-themed mb-6 mobile-centered-subtitle mobile-text-center">
+            Smart Farming Assistant
+          </p>
+          <p class="text-secondary-themed text-lg leading-relaxed mobile-centered-description mobile-text-center">
+            Revolutionize your farming with AI-powered insights. Monitor crops, predict yields, and optimize harvests
+            with intelligent technology.
+          </p>
+        </div>
+
+        <!-- Features List -->
+        <div class="space-y-4 hidden lg:block">
+          <div class="flex items-center feature-item">
+            <i class="fas fa-check-circle mr-3"></i>
+            <span>AI-powered disease detection</span>
+          </div>
+          <div class="flex items-center feature-item">
+            <i class="fas fa-check-circle mr-3"></i>
+            <span>Real-time weather monitoring</span>
+          </div>
+          <div class="flex items-center feature-item">
+            <i class="fas fa-check-circle mr-3"></i>
+            <span>Smart yield predictions</span>
+          </div>
+          <div class="flex items-center feature-item">
+            <i class="fas fa-check-circle mr-3"></i>
+            <span>Market price analytics</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side - Auth Forms -->
+      <div class="slide-in-right">
+        <div class="glassmorphism rounded-3xl p-8 max-w-md mx-auto">
+          <!-- Success Message (Hidden by default) -->
+          <div id="success-message" class="text-center hidden success-screen">
+            <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+              <circle class="success-checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+              <path class="success-checkmark-check" fill="none" d="m14.1 27.2l7.1 7.2 16.7-16.8" />
+            </svg>
+            <h3 class="text-2xl font-bold text-primary-themed mb-2">Welcome to Shamba AI!</h3>
+            <p class="text-secondary-themed mb-4">Redirecting to your dashboard...</p>
+          </div>
+
+          <!-- Toggle Buttons -->
+          <div id="auth-toggle" class="flex bg-white bg-opacity-10 rounded-full p-1 mb-8">
+            <button id="login-toggle"
+              class="flex-1 py-3 px-6 rounded-full font-semibold transition-all duration-300 toggle-btn-active">
+              Login
+            </button>
+            <button id="register-toggle"
+              class="flex-1 py-3 px-6 rounded-full font-semibold transition-all duration-300 toggle-btn-inactive">
+              Register
+            </button>
+          </div>
+
+          <!-- Login Form -->
+          <div id="login-form" class="form-transition">
+            <h2 class="text-3xl font-bold text-primary-themed mb-6 text-center">Welcome Back</h2>
+
+            <!-- Error/Success Messages -->
+            <div id="login-error" class="error-message"></div>
+            <div id="login-success" class="success-message"></div>
+
+            <form id="loginForm" class="space-y-6">
+              <div class="input-group">
+                <i class="fas fa-envelope input-icon"></i>
+                <input type="email" id="login-email" placeholder="Email Address" required
+                  class="w-full py-4 rounded-xl input-focus focus:outline-none">
+              </div>
+
+              <div class="input-group">
+                <i class="fas fa-lock input-icon"></i>
+                <input type="password" id="login-password" placeholder="Password" required
+                  class="w-full py-4 rounded-xl input-focus focus:outline-none">
+                <i class="fas fa-eye password-toggle" onclick="togglePassword('login-password')"></i>
+              </div>
+
+              <div class="checkbox-container">
+                <input type="checkbox" class="custom-checkbox" id="remember-me">
+                <div class="checkbox-label flex justify-between items-start w-full">
+                  <label for="remember-me" class="text-sm cursor-pointer">Remember me</label>
+                  <a href="#" class="text-sm themed-link">
+                    Forgot Password?
+                  </a>
+                </div>
+              </div>
+
+              <button type="submit" class="w-full text-white font-bold py-4 rounded-xl btn-hover">
+                <i class="fas fa-sign-in-alt mr-2"></i>
+                Sign In
+              </button>
+            </form>
+          </div>
+
+          <!-- Register Form -->
+          <div id="register-form" class="form-transition hidden">
+            <h2 class="text-3xl font-bold text-primary-themed mb-6 text-center">Join Shamba AI</h2>
+
+            <!-- Error/Success Messages -->
+            <div id="register-error" class="error-message"></div>
+            <div id="register-success" class="success-message"></div>
+
+            <form id="registerForm" class="space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="input-group">
+                  <i class="fas fa-user input-icon"></i>
+                  <input type="text" id="first-name" placeholder="First Name" required
+                    class="w-full py-4 rounded-xl input-focus focus:outline-none">
+                </div>
+                <div class="input-group">
+                  <i class="fas fa-user input-icon"></i>
+                  <input type="text" id="last-name" placeholder="Last Name" required
+                    class="w-full py-4 rounded-xl input-focus focus:outline-none">
+                </div>
+              </div>
+
+              <div class="input-group">
+                <i class="fas fa-envelope input-icon"></i>
+                <input type="email" id="register-email" placeholder="Email Address" required
+                  class="w-full py-4 rounded-xl input-focus focus:outline-none">
+              </div>
+
+              <div class="input-group">
+                <i class="fas fa-phone input-icon"></i>
+                <input type="tel" id="phone" placeholder="Phone Number" required
+                  class="w-full py-4 rounded-xl input-focus focus:outline-none">
+              </div>
+
+              <div class="input-group">
+                <i class="fas fa-map-marker-alt input-icon"></i>
+                <div class="custom-select-wrapper">
+                  <div class="custom-select-trigger" id="location-trigger">
+                    <span class="placeholder">Select Location</span>
+                    <i class="fas fa-chevron-down custom-select-arrow"></i>
+                  </div>
+                  <div class="custom-select-dropdown" id="location-dropdown">
+                    <div class="custom-select-option" data-value="">Select Location</div>
+                    <div class="custom-select-option" data-value="nairobi">Nairobi</div>
+                    <div class="custom-select-option" data-value="mombasa">Mombasa</div>
+                    <div class="custom-select-option" data-value="kisumu">Kisumu</div>
+                    <div class="custom-select-option" data-value="nakuru">Nakuru</div>
+                    <div class="custom-select-option" data-value="eldoret">Eldoret</div>
+                    <div class="custom-select-option" data-value="meru">Meru</div>
+                    <div class="custom-select-option" data-value="other">Other</div>
+                  </div>
+                  <input type="hidden" id="location" name="location" required>
+                </div>
+              </div>
+
+              <div class="input-group">
+                <i class="fas fa-lock input-icon"></i>
+                <input type="password" id="register-password" placeholder="Password" required
+                  class="w-full py-4 rounded-xl input-focus focus:outline-none">
+                <i class="fas fa-eye password-toggle" onclick="togglePassword('register-password')"></i>
+              </div>
+
+              <div class="input-group">
+                <i class="fas fa-lock input-icon"></i>
+                <input type="password" id="confirm-password" placeholder="Confirm Password" required
+                  class="w-full py-4 rounded-xl input-focus focus:outline-none">
+                <i class="fas fa-eye password-toggle" onclick="togglePassword('confirm-password')"></i>
+              </div>
+
+              <div class="checkbox-container">
+                <input type="checkbox" id="terms" required class="custom-checkbox">
+                <label for="terms" class="checkbox-label text-sm leading-relaxed">
+                  I agree to the <a href="#" class="themed-link underline">Terms of Service</a>
+                  and <a href="#" class="themed-link underline">Privacy Policy</a>
+                </label>
+              </div>
+
+              <button type="submit" class="w-full text-white font-bold py-4 rounded-xl btn-hover">
+                <i class="fas fa-user-plus mr-2"></i>
+                Create Account
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Users Database Management (Simulating users.json)
+    class UsersDatabase {
+      constructor() {
+        this.storageKey = 'shambaAI_users_database';
+        this.init();
+      }
+
+      init() {
+        // Initialize users database if it doesn't exist
+        if (!localStorage.getItem(this.storageKey)) {
+          const defaultUsers = {
+            users: [],
+            lastUserId: 0,
+            metadata: {
+              created: new Date().toISOString(),
+              version: "1.0.0",
+              description: "Shamba AI Users Database"
+            }
+          };
+          localStorage.setItem(this.storageKey, JSON.stringify(defaultUsers));
+        }
+      }
+
+      getDatabase() {
+        return JSON.parse(localStorage.getItem(this.storageKey) || '{"users":[],"lastUserId":0}');
+      }
+
+      saveDatabase(database) {
+        database.metadata = {
+          ...database.metadata,
+          lastModified: new Date().toISOString()
+        };
+        localStorage.setItem(this.storageKey, JSON.stringify(database));
+      }
+
+      addUser(userData) {
+        const database = this.getDatabase();
+        const newUser = {
+          id: ++database.lastUserId,
+          ...userData,
+          registeredAt: new Date().toISOString(),
+          lastLogin: null,
+          isActive: true,
+          profile: {
+            avatar: null,
+            preferences: {
+              theme: 'light',
+              notifications: true,
+              language: 'en'
+            }
+          }
+        };
+
+        database.users.push(newUser);
+        this.saveDatabase(database);
+        return newUser;
+      }
+
+      findUserByEmail(email) {
+        const database = this.getDatabase();
+        return database.users.find(user => user.email.toLowerCase() === email.toLowerCase());
+      }
+
+      updateUserLogin(userId) {
+        const database = this.getDatabase();
+        const userIndex = database.users.findIndex(user => user.id === userId);
+        if (userIndex !== -1) {
+          database.users[userIndex].lastLogin = new Date().toISOString();
+          this.saveDatabase(database);
+        }
+      }
+
+      validatePassword(user, password) {
+        // In a real application, you would hash and compare passwords
+        // For this demo, we're storing passwords in plain text (NOT recommended for production)
+        return user.password === password;
+      }
+
+      getAllUsers() {
+        const database = this.getDatabase();
+        return database.users;
+      }
+
+      exportUsersJson() {
+        const database = this.getDatabase();
+        return JSON.stringify(database, null, 2);
+      }
+    }
+
+    // Initialize the users database
+    const usersDB = new UsersDatabase();
+
+    // Theme Toggle Functionality
+    const themeToggle = document.getElementById('theme-toggle');
+    const htmlElement = document.documentElement;
+
+    // Check for saved theme or default to light
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    htmlElement.setAttribute('data-theme', savedTheme);
+
+    themeToggle.addEventListener('click', () => {
+      const currentTheme = htmlElement.getAttribute('data-theme');
+      const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+
+      htmlElement.setAttribute('data-theme', newTheme);
+      localStorage.setItem('theme', newTheme);
+
+      // Add a subtle animation to the toggle
+      themeToggle.style.transform = 'scale(0.9)';
+      setTimeout(() => {
+        themeToggle.style.transform = 'scale(1)';
+      }, 150);
+    });
+
+    // Toggle between login and register forms
+    const loginToggle = document.getElementById('login-toggle');
+    const registerToggle = document.getElementById('register-toggle');
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+
+    loginToggle.addEventListener('click', () => {
+      loginToggle.classList.remove('toggle-btn-inactive');
+      loginToggle.classList.add('toggle-btn-active');
+      registerToggle.classList.remove('toggle-btn-active');
+      registerToggle.classList.add('toggle-btn-inactive');
+      loginForm.classList.remove('hidden');
+      registerForm.classList.add('hidden');
+      clearMessages();
+    });
+
+    registerToggle.addEventListener('click', () => {
+      registerToggle.classList.remove('toggle-btn-inactive');
+      registerToggle.classList.add('toggle-btn-active');
+      loginToggle.classList.remove('toggle-btn-active');
+      loginToggle.classList.add('toggle-btn-inactive');
+      registerForm.classList.remove('hidden');
+      loginForm.classList.add('hidden');
+      clearMessages();
+    });
+
+    // Message handling functions
+    function showError(elementId, message) {
+      const errorElement = document.getElementById(elementId);
+      errorElement.textContent = message;
+      errorElement.style.display = 'block';
+      setTimeout(() => {
+        errorElement.style.display = 'none';
+      }, 5000);
+    }
+
+    function showSuccess(elementId, message) {
+      const successElement = document.getElementById(elementId);
+      successElement.textContent = message;
+      successElement.style.display = 'block';
+      setTimeout(() => {
+        successElement.style.display = 'none';
+      }, 3000);
+
+      window.location.assign('../dashboard/');
+    }
+
+    function clearMessages() {
+      document.querySelectorAll('.error-message, .success-message').forEach(el => {
+        el.style.display = 'none';
+      });
+    }
+
+    // Custom Select Dropdown Implementation
+    const customSelect = {
+      init() {
+        const trigger = document.getElementById('location-trigger');
+        const dropdown = document.getElementById('location-dropdown');
+        const hiddenInput = document.getElementById('location');
+        const options = dropdown.querySelectorAll('.custom-select-option');
+
+        // Toggle dropdown
+        trigger.addEventListener('click', (e) => {
+          e.stopPropagation();
+          trigger.classList.toggle('active');
+          dropdown.classList.toggle('active');
+        });
+
+        // Handle option selection
+        options.forEach(option => {
+          option.addEventListener('click', () => {
+            const value = option.dataset.value;
+            const text = option.textContent;
+
+            // Update hidden input
+            hiddenInput.value = value;
+
+            // Update trigger text
+            const triggerText = trigger.querySelector('.placeholder, .selected-text');
+            if (value === '') {
+              triggerText.textContent = 'Select Location';
+              triggerText.className = 'placeholder';
+            } else {
+              triggerText.textContent = text;
+              triggerText.className = 'selected-text';
+            }
+
+            // Update selected state
+            options.forEach(opt => opt.classList.remove('selected'));
+            if (value !== '') {
+              option.classList.add('selected');
+            }
+
+            // Close dropdown
+            trigger.classList.remove('active');
+            dropdown.classList.remove('active');
+          });
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', (e) => {
+          if (!trigger.contains(e.target) && !dropdown.contains(e.target)) {
+            trigger.classList.remove('active');
+            dropdown.classList.remove('active');
+          }
+        });
+      }
+    };
+
+    // Initialize custom select
+    customSelect.init();
+
+    // Password visibility toggle
+    function togglePassword(inputId) {
+      const input = document.getElementById(inputId);
+      const icon = input.parentElement.querySelector('.password-toggle');
+
+      if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.remove('fa-eye');
+        icon.classList.add('fa-eye-slash');
+      } else {
+        input.type = 'password';
+        icon.classList.remove('fa-eye-slash');
+        icon.classList.add('fa-eye');
+      }
+    }
+
+    // Email validation function
+    function isValidEmail(email) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(email);
+    }
+
+    // Password strength validation
+    function validatePasswordStrength(password) {
+      const minLength = 6;
+      const hasUpperCase = /[A-Z]/.test(password);
+      const hasLowerCase = /[a-z]/.test(password);
+      const hasNumbers = /\d/.test(password);
+
+      const errors = [];
+
+      if (password.length < minLength) {
+        errors.push(`Password must be at least ${minLength} characters long`);
+      }
+      if (!hasLowerCase) {
+        errors.push('Password must contain at least one lowercase letter');
+      }
+      if (!hasNumbers) {
+        errors.push('Password must contain at least one number');
+      }
+
+      return {
+        isValid: errors.length === 0,
+        errors: errors
+      };
+    }
+
+    // Login Form Submission
+    document.getElementById('loginForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      clearMessages();
+
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+
+      // Basic validation
+      if (!email || !password) {
+        showError('login-error', 'Please fill in all fields.');
+        return;
+      }
+
+      if (!isValidEmail(email)) {
+        showError('login-error', 'Please enter a valid email address.');
+        return;
+      }
+
+      // Check if user exists
+      const user = usersDB.findUserByEmail(email);
+      if (!user) {
+        showError('login-error', 'No account found with this email address. Please register first.');
+        return;
+      }
+
+      // Validate password
+      if (!usersDB.validatePassword(user, password)) {
+        showError('login-error', 'Invalid password. Please try again.');
+        return;
+      }
+
+      // Successful login
+      usersDB.updateUserLogin(user.id);
+
+      // Store current user session
+      localStorage.setItem('currentUser', JSON.stringify({
+        id: user.id,
+        email: user.email,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        loginTime: new Date().toISOString()
+      }));
+
+      showSuccess('login-success', 'Login successful! Redirecting...');
+
+      setTimeout(() => {
+        showSuccessScreen();
+      }, 1500);
+    });
+
+    // Register Form Submission
+    document.getElementById('registerForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+      clearMessages();
+
+      const firstName = document.getElementById('first-name').value.trim();
+      const lastName = document.getElementById('last-name').value.trim();
+      const email = document.getElementById('register-email').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const location = document.getElementById('location').value;
+      const password = document.getElementById('register-password').value;
+      const confirmPassword = document.getElementById('confirm-password').value;
+      const termsAccepted = document.getElementById('terms').checked;
+
+      // Basic validation
+      if (!firstName || !lastName || !email || !phone || !location || !password || !confirmPassword) {
+        showError('register-error', 'Please fill in all fields.');
+        return;
+      }
+
+      if (!isValidEmail(email)) {
+        showError('register-error', 'Please enter a valid email address.');
+        return;
+      }
+
+      // Check if user already exists
+      if (usersDB.findUserByEmail(email)) {
+        showError('register-error', 'An account with this email already exists. Please login instead.');
+        return;
+      }
+
+      // Password validation
+      const passwordValidation = validatePasswordStrength(password);
+      if (!passwordValidation.isValid) {
+        showError('register-error', passwordValidation.errors.join('. '));
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        showError('register-error', 'Passwords do not match.');
+        return;
+      }
+
+      if (!termsAccepted) {
+        showError('register-error', 'Please accept the terms and conditions.');
+        return;
+      }
+
+      // Phone validation (basic)
+      const phoneRegex = /^[\+]?[\d\s\-\(\)]{10,}$/;
+      if (!phoneRegex.test(phone)) {
+        showError('register-error', 'Please enter a valid phone number.');
+        return;
+      }
+
+      try {
+        // Create new user
+        const newUser = usersDB.addUser({
+          firstName,
+          lastName,
+          email,
+          phone,
+          location,
+          password // In production, this should be hashed
+        });
+
+        // Store current user session
+        localStorage.setItem('currentUser', JSON.stringify({
+          id: newUser.id,
+          email: newUser.email,
+          firstName: newUser.firstName,
+          lastName: newUser.lastName,
+          loginTime: new Date().toISOString()
+        }));
+
+        showSuccess('register-success', 'Account created successfully! Redirecting...');
+
+        setTimeout(() => {
+          showSuccessScreen();
+        }, 1500);
+
+      } catch (error) {
+        showError('register-error', 'Registration failed. Please try again.');
+        console.error('Registration error:', error);
+      }
+    });
+
+    // Fixed Success Screen Animation
+    function showSuccessScreen() {
+      const authToggle = document.getElementById('auth-toggle');
+      const loginForm = document.getElementById('login-form');
+      const registerForm = document.getElementById('register-form');
+      const successMessage = document.getElementById('success-message');
+
+      // Hide forms with smooth transition
+      authToggle.style.opacity = '0';
+      loginForm.style.opacity = '0';
+      registerForm.style.opacity = '0';
+
+      setTimeout(() => {
+        authToggle.classList.add('hidden');
+        loginForm.classList.add('hidden');
+        registerForm.classList.add('hidden');
+
+        // Show success message with animation
+        successMessage.classList.remove('hidden');
+        successMessage.style.opacity = '0';
+
+        setTimeout(() => {
+          successMessage.style.opacity = '1';
+        }, 100);
+      }, 300);
+
+      // Simulate redirect to dashboard
+      setTimeout(() => {
+        const usersJson = usersDB.exportUsersJson();
+        console.log('Users Database (users.json format):', usersJson);
+        alert('Demo: Would redirect to dashboard now. Check console for users.json data.');
+        // In a real application: window.location.href = '/dashboard';
+      }, 3000);
+    }
+
+    // Input validation feedback with theme colors
+    const inputs = document.querySelectorAll('input[required]');
+    inputs.forEach(input => {
+      input.addEventListener('blur', function () {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const errorColor = currentTheme === 'light' ? 'rgba(239, 68, 68, 0.8)' : 'rgba(248, 113, 113, 0.8)';
+        const successColor = currentTheme === 'light' ? 'rgba(16, 185, 129, 0.8)' : 'rgba(6, 182, 212, 0.8)';
+
+        if (this.value.trim() === '') {
+          this.style.borderColor = errorColor;
+        } else {
+          this.style.borderColor = successColor;
+        }
+      });
+
+      input.addEventListener('input', function () {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const successColor = currentTheme === 'light' ? 'rgba(16, 185, 129, 0.8)' : 'rgba(6, 182, 212, 0.8)';
+
+        if (this.value.trim() !== '') {
+          this.style.borderColor = successColor;
+        }
+      });
+    });
+
+    // Email validation
+    const emailInputs = document.querySelectorAll('input[type="email"]');
+    emailInputs.forEach(input => {
+      input.addEventListener('blur', function () {
+        const currentTheme = document.documentElement.getAttribute('data-theme');
+        const errorColor = currentTheme === 'light' ? 'rgba(239, 68, 68, 0.8)' : 'rgba(248, 113, 113, 0.8)';
+        const successColor = currentTheme === 'light' ? 'rgba(16, 185, 129, 0.8)' : 'rgba(6, 182, 212, 0.8)';
+
+        if (!isValidEmail(this.value)) {
+          this.style.borderColor = errorColor;
+        } else {
+          this.style.borderColor = successColor;
+        }
+      });
+    });
+
+    // Password strength indicator
+    document.getElementById('register-password').addEventListener('input', function () {
+      const password = this.value;
+      const validation = validatePasswordStrength(password);
+
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      let color = currentTheme === 'light' ? 'rgba(239, 68, 68, 0.8)' : 'rgba(248, 113, 113, 0.8)';
+
+      if (validation.isValid) {
+        color = currentTheme === 'light' ? 'rgba(16, 185, 129, 0.8)' : 'rgba(6, 182, 212, 0.8)';
+      } else if (password.length >= 4) {
+        color = currentTheme === 'light' ? 'rgba(251, 191, 36, 0.8)' : 'rgba(245, 158, 11, 0.8)';
+      }
+
+      this.style.borderColor = color;
+    });
+
+    // Enhanced checkbox functionality with fixed animation
+    document.querySelectorAll('.custom-checkbox').forEach(checkbox => {
+      checkbox.addEventListener('change', function () {
+        // Trigger reflow to ensure animation works
+        if (this.checked) {
+          this.style.animation = 'none';
+          this.offsetHeight; // Trigger reflow
+          this.style.animation = null;
+        }
+      });
+    });
+
+    // Debug functions
+    window.viewAllUsers = function () {
+      const users = usersDB.getAllUsers();
+      console.log('All registered users:', users);
+      return users;
+    };
+
+    window.exportUsersJson = function () {
+      const usersJson = usersDB.exportUsersJson();
+      console.log('Users Database (users.json format):', usersJson);
+
+      // Create downloadable file
+      const blob = new Blob([usersJson], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'users.json';
+      a.click();
+      URL.revokeObjectURL(url);
+
+      return usersJson;
+    };
+
+    window.clearUsersDatabase = function () {
+      localStorage.removeItem('shambaAI_users_database');
+      usersDB.init();
+      console.log('Users database cleared');
+    };
+
+    // Smooth scrolling for mobile
+    document.addEventListener('DOMContentLoaded', function () {
+      if (window.innerWidth < 1024) {
+        document.body.style.overflow = 'auto';
+      }
+    });
+
+    // Add theme transition effect
+    document.addEventListener('DOMContentLoaded', function () {
+      document.body.style.transition = 'background 0.5s ease';
+    });
+
+    // Console message for developers
+    console.log('🌱 Shamba AI Authentication System Loaded');
+    console.log('📚 Available debug functions:');
+    console.log('   - viewAllUsers() - View all registered users');
+    console.log('   - exportUsersJson() - Export users database as JSON file');
+    console.log('   - clearUsersDatabase() - Clear the users database');
+    console.log('💾 User data is stored in localStorage as "shambaAI_users_database"');
+  </script>
+</body>
+
+</html>

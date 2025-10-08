@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CropWise Farm Records - Smart Farming Assistant</title>
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+  <!-- External Libraries -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* Additional styles for theme compatibility */
+    .form-input {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+    }
+
+    .form-input:focus {
+      border-color: #10b981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+
+    .btn-primary {
+      background-color: #10b981;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #059669;
+    }
+
+    .modal-content {
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      color: white;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .notification-success {
+      background-color: #10b981;
+    }
+
+    .notification-error {
+      background-color: #ef4444;
+    }
+
+    .tab-button {
+      padding: 8px 16px;
+      border-radius: 6px;
+      transition: all 0.2s;
+    }
+
+    .tab-button.active {
+      background-color: #10b981;
+      color: white;
+    }
+
+    .tab-button:not(.active) {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+    }
+
+    .tab-button:not(.active):hover {
+      background-color: var(--border-color);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Include sidebar and header from index.html -->
+  <div id="navigation-container"></div>
+
+  <!-- Main Content -->
+  <div class="lg:ml-64 main-content">
+    <!-- Include Mobile Header -->
+    <div id="mobile-header-container"></div>
+    <!-- Include Desktop Header -->
+    <div id="desktop-header-container"></div>
+
+    <!-- Page Content -->
+    <main class="p-6 mobile-header-spacing lg:pt-6">
+      <!-- Dashboard Overview -->
+      <div class="content-section">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+          <!-- Quick Stats -->
+          <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+            <h3 class="text-lg font-semibold text-primary mb-4">This Month</h3>
+            <div class="space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-secondary">Total Expenses</span>
+                <span class="font-semibold text-red-600" id="monthly-expenses">KES 0</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-secondary">Total Sales</span>
+                <span class="font-semibold text-green-600" id="monthly-sales">KES 0</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-secondary">Net Profit</span>
+                <span class="font-semibold text-blue-600" id="monthly-profit">KES 0</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+            <h3 class="text-lg font-semibold text-primary mb-4">Farm Activities</h3>
+            <div class="space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-secondary">Total Area</span>
+                <span class="font-semibold text-primary" id="total-area">0 ha</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-secondary">Planted</span>
+                <span class="font-semibold text-primary" id="planted-area">0 ha</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-secondary">Harvested</span>
+                <span class="font-semibold text-primary" id="harvested-area">0 ha</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+            <h3 class="text-lg font-semibold text-primary mb-4">Inventory Status</h3>
+            <div class="space-y-3">
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-secondary">Seeds</span>
+                <span class="font-semibold text-primary" id="seeds-status">Good</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-secondary">Fertilizer</span>
+                <span class="font-semibold text-primary" id="fertilizer-status">Good</span>
+              </div>
+              <div class="flex justify-between items-center">
+                <span class="text-sm text-secondary">Pesticides</span>
+                <span class="font-semibold text-primary" id="pesticides-status">Low</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+            <h3 class="text-lg font-semibold text-primary mb-4">Quick Actions</h3>
+            <div class="space-y-2">
+              <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 text-sm"
+                onclick="showAddRecordModal('expense')">
+                <i class="fas fa-plus mr-2"></i>Add Expense
+              </button>
+              <button class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 text-sm"
+                onclick="showAddRecordModal('sale')">
+                <i class="fas fa-plus mr-2"></i>Add Sale
+              </button>
+              <button class="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 text-sm"
+                onclick="showAddRecordModal('activity')">
+                <i class="fas fa-plus mr-2"></i>Add Activity
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Records Section with Tabs -->
+      <div class="content-section">
+        <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6 gap-4">
+            <h3 class="text-lg font-semibold text-primary">Farm Records</h3>
+            <div class="flex space-x-2">
+              <button class="px-4 py-2 bg-secondary text-primary rounded-lg hover:bg-gray-300 text-sm"
+                onclick="showFilterModal()">
+                <i class="fas fa-filter mr-2"></i>Filter
+              </button>
+              <button class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm"
+                onclick="exportRecords()">
+                <i class="fas fa-download mr-2"></i>Export
+              </button>
+            </div>
+          </div>
+
+          <!-- Tab Navigation -->
+          <div class="flex flex-wrap gap-2 mb-6">
+            <button class="tab-button active" onclick="switchTab('financial')">Financial Records</button>
+            <button class="tab-button" onclick="switchTab('activities')">Activities</button>
+            <button class="tab-button" onclick="switchTab('inventory')">Inventory</button>
+            <button class="tab-button" onclick="switchTab('production')">Production</button>
+          </div>
+
+          <!-- Tab Content -->
+          <div id="financial-tab" class="tab-content active">
+            <div class="overflow-x-auto hide-scrollbar">
+              <table class="w-full text-sm">
+                <thead class="bg-secondary">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-primary">Date</th>
+                    <th class="px-4 py-3 text-left text-primary">Type</th>
+                    <th class="px-4 py-3 text-left text-primary">Description</th>
+                    <th class="px-4 py-3 text-left text-primary">Amount</th>
+                    <th class="px-4 py-3 text-left text-primary">Category</th>
+                    <th class="px-4 py-3 text-left text-primary">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200" id="financial-records-table">
+                  <!-- Financial records will be loaded here from Firebase -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="activities-tab" class="tab-content">
+            <div class="overflow-x-auto hide-scrollbar">
+              <table class="w-full text-sm">
+                <thead class="bg-secondary">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-primary">Date</th>
+                    <th class="px-4 py-3 text-left text-primary">Activity</th>
+                    <th class="px-4 py-3 text-left text-primary">Crop/Field</th>
+                    <th class="px-4 py-3 text-left text-primary">Details</th>
+                    <th class="px-4 py-3 text-left text-primary">Cost</th>
+                    <th class="px-4 py-3 text-left text-primary">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200" id="activities-records-table">
+                  <!-- Activity records will be loaded here from Firebase -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="inventory-tab" class="tab-content">
+            <div class="overflow-x-auto hide-scrollbar">
+              <table class="w-full text-sm">
+                <thead class="bg-secondary">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-primary">Item</th>
+                    <th class="px-4 py-3 text-left text-primary">Category</th>
+                    <th class="px-4 py-3 text-left text-primary">Quantity</th>
+                    <th class="px-4 py-3 text-left text-primary">Unit</th>
+                    <th class="px-4 py-3 text-left text-primary">Unit Cost</th>
+                    <th class="px-4 py-3 text-left text-primary">Total Value</th>
+                    <th class="px-4 py-3 text-left text-primary">Status</th>
+                    <th class="px-4 py-3 text-left text-primary">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200" id="inventory-records-table">
+                  <!-- Inventory records will be loaded here from Firebase -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div id="production-tab" class="tab-content">
+            <div class="overflow-x-auto hide-scrollbar">
+              <table class="w-full text-sm">
+                <thead class="bg-secondary">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-primary">Crop</th>
+                    <th class="px-4 py-3 text-left text-primary">Planting Date</th>
+                    <th class="px-4 py-3 text-left text-primary">Harvest Date</th>
+                    <th class="px-4 py-3 text-left text-primary">Area (ha)</th>
+                    <th class="px-4 py-3 text-left text-primary">Yield (kg)</th>
+                    <th class="px-4 py-3 text-left text-primary">Yield/ha (kg)</th>
+                    <th class="px-4 py-3 text-left text-primary">Revenue</th>
+                    <th class="px-4 py-3 text-left text-primary">Cost</th>
+                    <th class="px-4 py-3 text-left text-primary">Profit</th>
+                    <th class="px-4 py-3 text-left text-primary">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200" id="production-records-table">
+                  <!-- Production records will be loaded here from Firebase -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Financial Summary Chart -->
+      <div class="content-section">
+        <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 gap-4">
+            <h3 class="text-lg font-semibold text-primary">Financial Summary</h3>
+            <div class="flex space-x-2">
+              <select id="chart-period" class="form-input px-3 py-1 rounded text-sm">
+                <option value="6months">Last 6 Months</option>
+                <option value="year">This Year</option>
+                <option value="all">All Time</option>
+              </select>
+            </div>
+          </div>
+          <div class="chart-container" style="height: 300px;">
+            <canvas id="financial-chart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- Production Analysis Chart -->
+      <div class="content-section">
+        <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+          <h3 class="text-lg font-semibold text-primary mb-4">Production Analysis</h3>
+          <div class="chart-container" style="height: 300px;">
+            <canvas id="production-chart"></canvas>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Add Record Modal -->
+  <div id="add-record-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="modal-content rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold text-primary" id="modal-title">Add Record</h3>
+          <button class="text-gray-500 hover:text-gray-700" onclick="closeAddRecordModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="add-record-form">
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-primary mb-1">Date</label>
+              <input type="date" id="record-date" class="form-input w-full p-2 rounded-lg">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-primary mb-1">Description</label>
+              <input type="text" id="record-description" class="form-input w-full p-2 rounded-lg">
+            </div>
+            <div id="amount-field">
+              <label class="block text-sm font-medium text-primary mb-1">Amount (KES)</label>
+              <input type="number" id="record-amount" class="form-input w-full p-2 rounded-lg">
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-primary mb-1">Category</label>
+              <select id="record-category" class="form-input w-full p-2 rounded-lg">
+                <option value="">Select Category</option>
+              </select>
+            </div>
+
+            <!-- Additional fields for specific record types -->
+            <div id="expense-fields" class="space-y-4 hidden">
+              <div>
+                <label class="block text-sm font-medium text-primary mb-1">Supplier</label>
+                <input type="text" id="expense-supplier" class="form-input w-full p-2 rounded-lg">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-1">Payment Method</label>
+                <select id="expense-payment" class="form-input w-full p-2 rounded-lg">
+                  <option value="cash">Cash</option>
+                  <option value="mpesa">M-Pesa</option>
+                  <option value="bank">Bank Transfer</option>
+                  <option value="credit">Credit</option>
+                </select>
+              </div>
+            </div>
+
+            <div id="sale-fields" class="space-y-4 hidden">
+              <div>
+                <label class="block text-sm font-medium text-primary mb-1">Customer</label>
+                <input type="text" id="sale-customer" class="form-input w-full p-2 rounded-lg">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-1">Quantity</label>
+                <input type="number" id="sale-quantity" class="form-input w-full p-2 rounded-lg">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-1">Unit Price</label>
+                <input type="number" id="sale-unit-price" class="form-input w-full p-2 rounded-lg">
+              </div>
+            </div>
+
+            <div id="activity-fields" class="space-y-4 hidden">
+              <div>
+                <label class="block text-sm font-medium text-primary mb-1">Field/Crop</label>
+                <input type="text" id="activity-field" class="form-input w-full p-2 rounded-lg">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-1">Area (ha)</label>
+                <input type="number" id="activity-area" step="0.1" class="form-input w-full p-2 rounded-lg">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-1">Labor Hours</label>
+                <input type="number" id="activity-labor" step="0.5" class="form-input w-full p-2 rounded-lg">
+              </div>
+            </div>
+          </div>
+          <div class="mt-6 flex justify-end space-x-3">
+            <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
+              onclick="closeAddRecordModal()">
+              Cancel
+            </button>
+            <button type="submit" class="px-4 py-2 btn-primary rounded-lg">
+              Save Record
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filter Modal -->
+  <div id="filter-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+    <div class="modal-content rounded-lg shadow-xl w-full max-w-md">
+      <div class="p-6">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold text-primary">Filter Records</h3>
+          <button class="text-gray-500 hover:text-gray-700" onclick="closeFilterModal()">
+            <i class="fas fa-times"></i>
+          </button>
+        </div>
+        <form id="filter-form">
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-medium text-primary mb-1">Record Type</label>
+              <select id="filter-type" class="form-input w-full p-2 rounded-lg">
+                <option value="">All Types</option>
+                <option value="expense">Expenses</option>
+                <option value="sale">Sales</option>
+                <option value="activity">Activities</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-primary mb-1">Category</label>
+              <select id="filter-category" class="form-input w-full p-2 rounded-lg">
+                <option value="">All Categories</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-primary mb-1">Date Range</label>
+              <div class="flex space-x-2">
+                <input type="date" id="filter-start-date" class="form-input w-full p-2 rounded-lg">
+                <input type="date" id="filter-end-date" class="form-input w-full p-2 rounded-lg">
+              </div>
+            </div>
+          </div>
+          <div class="mt-6 flex justify-end space-x-3">
+            <button type="button" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
+              onclick="resetFilters()">
+              Reset
+            </button>
+            <button type="submit" class="px-4 py-2 btn-primary rounded-lg">
+              Apply Filter
+            </button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase Configuration -->
+  <script src="js/firebase-config.js"></script>
+
+  <!-- Common JavaScript -->
+  <script src="js/common.js"></script>
+
+  <!-- Page-specific JavaScript -->
+  <script src="js/farm-records.js"></script>
+
+  <script>
+    // Load components
+    document.addEventListener('DOMContentLoaded', function () {
+      // Load navigation
+      fetch('navigation.html')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('navigation-container').innerHTML = html;
+        });
+
+      // Load mobile header
+      fetch('mobile-header.html')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('mobile-header-container').innerHTML = html;
+        });
+
+      // Load desktop header
+      fetch('desktop-header.html')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('desktop-header-container').innerHTML = html;
+        });
+    });
+
+    (function () {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+
+      // Theme toggle functionality
+      function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+        // Apply theme to document
+        document.documentElement.setAttribute("data-theme", newTheme);
+
+        // Update toggle state for both mobile and desktop
+        const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+        const desktopThemeToggle = document.getElementById('desktop-theme-toggle');
+
+        if (mobileThemeToggle) {
+          void mobileThemeToggle.offsetWidth; // Force reflow
+          if (newTheme === "dark") {
+            mobileThemeToggle.classList.add("active");
+          } else {
+            mobileThemeToggle.classList.remove("active");
+          }
+        }
+
+        if (desktopThemeToggle) {
+          void desktopThemeToggle.offsetWidth; // Force reflow
+          if (newTheme === "dark") {
+            desktopThemeToggle.classList.add("active");
+          } else {
+            desktopThemeToggle.classList.remove("active");
+          }
+        }
+
+        // Save to localStorage
+        localStorage.setItem("theme", newTheme);
+
+        // Save to Firebase if user is logged in
+        const userData = getCurrentUserData();
+        if (userData) {
+          const emailKey = userData.email.replace(/\./g, "_");
+          database.ref("users/" + emailKey).update({ theme: newTheme })
+            .then(() => console.log("Theme saved to Firebase:", newTheme))
+            .catch(error => console.error("Error saving theme to Firebase:", error));
+        }
+      }
+
+      // Get current user data
+      function getCurrentUserData() {
+        try {
+          const userData = localStorage.getItem("userData");
+          return userData ? JSON.parse(userData) : null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      // Load components
+      document.addEventListener('DOMContentLoaded', function () {
+        // Load navigation
+        fetch('navigation.html')
+          .then(response => response.text())
+          .then(html => {
+            document.getElementById('navigation-container').innerHTML = html;
+          });
+
+        // Load mobile header
+        fetch('mobile-header.html')
+          .then(response => response.text())
+          .then(html => {
+            document.getElementById('mobile-header-container').innerHTML = html;
+
+            // Initialize mobile theme toggle after loading
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+            if (mobileThemeToggle) {
+              void mobileThemeToggle.offsetWidth; // Force reflow
+              if (savedTheme === 'dark') {
+                mobileThemeToggle.classList.add('active');
+              } else {
+                mobileThemeToggle.classList.remove('active');
+              }
+
+              mobileThemeToggle.addEventListener('click', function (e) {
+                e.stopPropagation();
+                toggleTheme();
+              });
+            }
+          });
+
+        // Load desktop header
+        fetch('desktop-header.html')
+          .then(response => response.text())
+          .then(html => {
+            document.getElementById('desktop-header-container').innerHTML = html;
+
+            // Initialize desktop theme toggle after loading
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const desktopThemeToggle = document.getElementById('desktop-theme-toggle');
+            if (desktopThemeToggle) {
+              void desktopThemeToggle.offsetWidth; // Force reflow
+              if (savedTheme === 'dark') {
+                desktopThemeToggle.classList.add('active');
+              } else {
+                desktopThemeToggle.classList.remove('active');
+              }
+
+              desktopThemeToggle.addEventListener('click', function (e) {
+                e.stopPropagation();
+                toggleTheme();
+              });
+            }
+          });
+      });
+  </script>
+</body>
+
+</html>

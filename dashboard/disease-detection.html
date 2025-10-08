@@ -1,0 +1,835 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CropWise Disease Detection - Smart Farming Assistant</title>
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+  <!-- External Libraries -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <style>
+    /* Apply theme immediately to prevent flicker */
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f9fafb;
+      --text-primary: #111827;
+      --text-secondary: #6b7280;
+      --border-color: #e5e7eb;
+      --card-bg: #ffffff;
+      --sidebar-bg: #ffffff;
+      --header-bg: #ffffff;
+      --transition-speed: 0s;
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #111827;
+      --bg-secondary: #1f2937;
+      --text-primary: #f9fafb;
+      --text-secondary: #d1d5db;
+      --border-color: #374151;
+      --card-bg: #1f2937;
+      --sidebar-bg: #111827;
+      --header-bg: #1f2937;
+    }
+
+    /* Base styles with smooth transitions */
+    * {
+      font-family: "Outfit", sans-serif;
+      transition: background-color var(--transition-speed) ease,
+        color var(--transition-speed) ease,
+        border-color var(--transition-speed) ease,
+        background var(--transition-speed) ease;
+    }
+
+    html,
+    body {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+    }
+
+    body {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      transition: background-color var(--transition-speed) ease,
+        color var(--transition-speed) ease;
+    }
+
+    /* Utility classes with theme variables */
+    .bg-primary {
+      background-color: var(--bg-primary);
+    }
+
+    .bg-secondary {
+      background-color: var(--bg-secondary);
+    }
+
+    .text-primary {
+      color: var(--text-primary);
+    }
+
+    .text-secondary {
+      color: var(--text-secondary);
+    }
+
+    .border-primary {
+      border-color: var(--border-color);
+    }
+
+    .card-bg {
+      background-color: var(--card-bg);
+    }
+
+    .sidebar-bg {
+      background-color: var(--sidebar-bg);
+    }
+
+    .header-bg {
+      background-color: var(--header-bg);
+    }
+
+    /* Component styles */
+    .gradient-bg {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .glassmorphism {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .sidebar-transition {
+      transition: transform var(--transition-speed) ease-in-out;
+    }
+
+    .page-fade {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity var(--transition-speed) ease-in-out,
+        transform var(--transition-speed) ease-in-out;
+    }
+
+    .page-fade.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .card-hover {
+      transition: box-shadow var(--transition-speed) ease;
+    }
+
+    .card-hover:hover {
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .nav-item {
+      transition: background-color var(--transition-speed) ease;
+    }
+
+    .nav-item:hover {
+      background: rgba(16, 185, 129, 0.1);
+      border-radius: 8px;
+    }
+
+    .nav-item.active {
+      background: rgba(16, 185, 129, 0.2);
+      border-radius: 8px;
+      border-left: 4px solid #10b981;
+    }
+
+    .file-upload-area {
+      border: 2px dashed var(--border-color);
+      transition: border-color var(--transition-speed) ease,
+        background-color var(--transition-speed) ease;
+    }
+
+    .file-upload-area:hover {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    .file-upload-area.dragover {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .chat-bubble {
+      animation: slideUp var(--transition-speed) ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .pulse-green {
+      animation: pulse-green 2s infinite;
+    }
+
+    @keyframes pulse-green {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      }
+
+      70% {
+        box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+      }
+    }
+
+    .weather-icon {
+      font-size: 3rem;
+      color: #10b981;
+    }
+
+    .progress-ring {
+      transform: rotate(-90deg);
+    }
+
+    .progress-ring-circle {
+      stroke-dasharray: 251.2;
+      stroke-dashoffset: 251.2;
+      transition: stroke-dashoffset 0.5s ease-in-out;
+    }
+
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Layout styles */
+    .fixed-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 60;
+    }
+
+    .mobile-header-spacing {
+      padding-top: 80px;
+    }
+
+    .sidebar-content {
+      height: calc(100vh - 120px);
+      overflow-y: auto;
+    }
+
+    .bg-green-51 {
+      border: #10b98183 solid 1px;
+    }
+
+    .bg-blue-51 {
+      border: #3b82f683 solid 1px;
+    }
+
+    .bg-purple-51 {
+      border: #a955f775 solid 1px;
+    }
+
+    .sidebar-profile {
+      position: sticky;
+      bottom: 0;
+      z-index: 10;
+      box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Dark mode toggle with smooth transitions */
+    .theme-toggle {
+      position: relative;
+      width: 50px;
+      height: 30px;
+      background: #374151;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: background-color var(--transition-speed) ease;
+    }
+
+    .theme-toggle.active {
+      background: #10b981;
+    }
+
+    .theme-toggle::before {
+      content: "";
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      transition: transform var(--transition-speed) ease;
+    }
+
+    .theme-toggle.active::before {
+      transform: translateX(21px);
+    }
+
+    .theme-icon {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      transition: opacity var(--transition-speed) ease;
+      pointer-events: none;
+    }
+
+    .sun-icon {
+      left: 6px;
+      color: #fbbf24;
+      opacity: 0;
+    }
+
+    .moon-icon {
+      left: 6px;
+      color: #c8bdf6;
+      opacity: 0;
+    }
+
+    .theme-toggle.active .sun-icon {
+      opacity: 0;
+    }
+
+    .theme-toggle.active .moon-icon {
+      opacity: 0;
+    }
+
+    /* Content and layout */
+    .main-content {
+      min-height: auto;
+    }
+
+    .content-section {
+      margin-bottom: 2rem;
+    }
+
+    .chart-container {
+      height: 400px;
+    }
+
+    @media (max-width: 1024px) {
+      .chart-container {
+        height: 300px;
+      }
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
+      .mobile-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .mobile-full {
+        width: 100%;
+      }
+    }
+
+    /* Print styles */
+    @media print {
+      .fixed-header {
+        position: relative;
+      }
+
+      .mobile-header-spacing {
+        padding-top: 0;
+      }
+
+      .sidebar-transition {
+        transform: none !important;
+      }
+
+      .page-content {
+        page-break-inside: avoid;
+      }
+    }
+
+    /* Scrollbar hiding */
+    .sidebar-content::-webkit-scrollbar,
+    body::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Mobile-specific styles */
+    @media screen and (max-width: 767px) {
+      .card-bg {
+        translate: -8px 0px;
+        width: 104%;
+      }
+
+      .baa {
+        padding-top: 70px;
+        text-align: center !important;
+      }
+
+      .upaa {
+        margin-top: 20px;
+      }
+
+      .botx {
+        display: none;
+        padding: 0px !important;
+      }
+
+      .boty {
+        height: 3px;
+        width: 3px;
+        margin-right: 6px;
+        margin-top: 6px;
+        background-color: #568568;
+        border-radius: 50%;
+        display: inline-block;
+        animation: pulse-online 3s infinite cubic-bezier(0.66, 0, 0.34, 0.5);
+      }
+
+      @keyframes pulse-online {
+        0% {
+          box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+        }
+
+        70% {
+          box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+        }
+
+        100% {
+          box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+        }
+      }
+    }
+
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Custom select styles */
+    .custom-select {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .custom-select-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 4px;
+    }
+
+    .custom-select-option {
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: background-color var(--transition-speed) ease;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .custom-select-option:last-child {
+      border-bottom: none;
+    }
+
+    .custom-select-option:hover {
+      background-color: rgba(16, 185, 129, 0.1);
+    }
+
+    .custom-select-input {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px 16px;
+      padding-right: 40px;
+      width: 100%;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .custom-select-arrow {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      transition: transform var(--transition-speed) ease;
+      color: var(--text-secondary);
+    }
+
+    .custom-select.open .custom-select-arrow {
+      transform: translateY(-50%) rotate(180deg);
+    }
+
+    /* Chat input */
+    .chat-input-container {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .chat-input-container input {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chat-input-container button {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media (max-width: 640px) {
+      .chat-input-container {
+        gap: 6px;
+      }
+
+      .chat-input-container button {
+        width: 42px;
+        height: 42px;
+      }
+    }
+
+    /* Modal styles */
+    .modal-backdrop {
+      backdrop-filter: blur(4px);
+    }
+
+    /* Table styles for dark mode */
+    .divide-gray-200 {
+      border-color: var(--border-color);
+    }
+
+    /* Status badge styles */
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .status-healthy {
+      background-color: rgba(16, 185, 129, 0.1);
+      color: #10b981;
+    }
+
+    .status-needs-attention {
+      background-color: rgba(239, 68, 68, 0.1);
+      color: #ef4444;
+    }
+
+    [data-theme="dark"] .status-healthy {
+      background-color: rgba(16, 185, 129, 0.2);
+    }
+
+    [data-theme="dark"] .status-needs-attention {
+      background-color: rgba(239, 68, 68, 0.2);
+    }
+
+    /* Hover styles for table rows */
+    .table-row-hover {
+      transition: background-color var(--transition-speed) ease;
+    }
+
+    .table-row-hover:hover {
+      background-color: rgba(16, 185, 129, 0.05);
+    }
+
+    [data-theme="dark"] .table-row-hover:hover {
+      background-color: rgba(16, 185, 129, 0.1);
+    }
+
+    /* Modal content styles */
+    .modal-content {
+      background-color: var(--card-bg);
+      color: var(--text-primary);
+    }
+
+    .modal-header {
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .modal-section {
+      background-color: var(--bg-secondary);
+      border-radius: 0.5rem;
+    }
+
+    /* Recommendation and prevention sections */
+    .recommendation-section {
+      background-color: rgba(59, 130, 246, 0.1);
+    }
+
+    [data-theme="dark"] .recommendation-section {
+      background-color: rgba(59, 130, 246, 0.2);
+    }
+
+    .prevention-section {
+      background-color: rgba(16, 185, 129, 0.1);
+    }
+
+    [data-theme="dark"] .prevention-section {
+      background-color: rgba(16, 185, 129, 0.2);
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Include sidebar and header from index.html -->
+  <div id="navigation-container"></div>
+
+  <!-- Main Content -->
+  <div class="lg:ml-64 main-content">
+    <!-- Include Mobile Header -->
+    <div id="mobile-header-container"></div>
+
+    <!-- Include Desktop Header -->
+    <div id="desktop-header-container"></div>
+
+    <!-- Page Content -->
+    <main class="p-6 mobile-header-spacing lg:pt-6">
+      <div class="content-section">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Upload Section -->
+          <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+            <h3 class="text-lg font-semibold text-primary mb-4">Upload Plant Photo</h3>
+            <div class="file-upload-area rounded-lg p-8 text-center" id="file-upload-area">
+              <i class="fas fa-cloud-upload-alt text-4xl text-secondary mb-4"></i>
+              <p class="text-secondary mb-2">Drag and drop your plant photo here</p>
+              <p class="text-sm text-secondary mb-4">or click to browse files</p>
+              <input type="file" id="photo-upload" class="hidden" accept="image/*">
+              <button class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+                onclick="document.getElementById('photo-upload').click()">
+                Select Photo
+              </button>
+            </div>
+            <div id="photo-preview" class="mt-4 hidden">
+              <img id="preview-image" class="w-full h-48 object-cover rounded-lg" alt="Preview">
+              <button id="analyze-btn"
+                class="w-full mt-4 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 font-semibold">
+                <i class="fas fa-search mr-2"></i>Analyze Plant
+              </button>
+            </div>
+          </div>
+
+          <!-- Results Section -->
+          <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+            <h3 class="text-lg font-semibold text-primary mb-4">Analysis Results</h3>
+            <div id="analysis-results" class="text-center text-secondary py-8">
+              <i class="fas fa-microscope text-4xl mb-4"></i>
+              <p>Upload a photo to get started</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Detection History -->
+      <div class="content-section mt-6">
+        <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+          <h3 class="text-lg font-semibold text-primary mb-4">Detection History</h3>
+          <div class="overflow-x-auto hide-scrollbar">
+            <table class="w-full text-sm tub">
+              <thead class="bg-secondary">
+                <tr>
+                  <th class="px-4 py-3 text-left text-primary">Date</th>
+                  <th class="px-4 py-3 text-left text-primary">Crop</th>
+                  <th class="px-4 py-3 text-left text-primary">Detection</th>
+                  <th class="px-4 py-3 text-left text-primary">Confidence</th>
+                  <th class="px-4 py-3 text-left text-primary">Status</th>
+                </tr>
+              </thead>
+              <tbody class="divide-gray-200" id="detection-history-body">
+                <!-- History will be loaded here from Firebase -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Firebase Configuration -->
+  <script src="js/firebase-config.js"></script>
+
+  <!-- Common JavaScript -->
+  <script src="js/common.js"></script>
+
+  <!-- Page-specific JavaScript -->
+  <script src="js/disease-detection.js"></script>
+
+  <script>
+    // Load components
+    document.addEventListener('DOMContentLoaded', function () {
+      // Load navigation
+      fetch('navigation.html')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('navigation-container').innerHTML = html;
+        });
+
+      // Load mobile header
+      fetch('mobile-header.html')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('mobile-header-container').innerHTML = html;
+        });
+
+      // Load desktop header
+      fetch('desktop-header.html')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('desktop-header-container').innerHTML = html;
+        });
+    });
+
+    (function () {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+
+        // Theme toggle functionality
+          function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+            const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+            // Apply theme to document
+            document.documentElement.setAttribute("data-theme", newTheme);
+
+            // Update toggle state for both mobile and desktop
+            const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+            const desktopThemeToggle = document.getElementById('desktop-theme-toggle');
+
+            if (mobileThemeToggle) {
+              void mobileThemeToggle.offsetWidth; // Force reflow
+              if (newTheme === "dark") {
+                mobileThemeToggle.classList.add("active");
+              } else {
+                mobileThemeToggle.classList.remove("active");
+              }
+            }
+
+            if (desktopThemeToggle) {
+              void desktopThemeToggle.offsetWidth; // Force reflow
+              if (newTheme === "dark") {
+                desktopThemeToggle.classList.add("active");
+              } else {
+                desktopThemeToggle.classList.remove("active");
+              }
+            }
+
+            // Save to localStorage
+            localStorage.setItem("theme", newTheme);
+
+            // Save to Firebase if user is logged in
+            const userData = getCurrentUserData();
+            if (userData) {
+              const emailKey = userData.email.replace(/\./g, "_");
+              database.ref("users/" + emailKey).update({ theme: newTheme })
+                .then(() => console.log("Theme saved to Firebase:", newTheme))
+                .catch(error => console.error("Error saving theme to Firebase:", error));
+            }
+          }
+
+          // Get current user data
+          function getCurrentUserData() {
+            try {
+              const userData = localStorage.getItem("userData");
+              return userData ? JSON.parse(userData) : null;
+            } catch (e) {
+              return null;
+            }
+          }
+
+          // Load components
+          document.addEventListener('DOMContentLoaded', function () {
+            // Load navigation
+            fetch('navigation.html')
+              .then(response => response.text())
+              .then(html => {
+                document.getElementById('navigation-container').innerHTML = html;
+              });
+
+            // Load mobile header
+            fetch('mobile-header.html')
+              .then(response => response.text())
+              .then(html => {
+                document.getElementById('mobile-header-container').innerHTML = html;
+
+                // Initialize mobile theme toggle after loading
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+                if (mobileThemeToggle) {
+                  void mobileThemeToggle.offsetWidth; // Force reflow
+                  if (savedTheme === 'dark') {
+                    mobileThemeToggle.classList.add('active');
+                  } else {
+                    mobileThemeToggle.classList.remove('active');
+                  }
+
+                  mobileThemeToggle.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    toggleTheme();
+                  });
+                }
+              });
+
+            // Load desktop header
+            fetch('desktop-header.html')
+              .then(response => response.text())
+              .then(html => {
+                document.getElementById('desktop-header-container').innerHTML = html;
+
+                // Initialize desktop theme toggle after loading
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                const desktopThemeToggle = document.getElementById('desktop-theme-toggle');
+                if (desktopThemeToggle) {
+                  void desktopThemeToggle.offsetWidth; // Force reflow
+                  if (savedTheme === 'dark') {
+                    desktopThemeToggle.classList.add('active');
+                  } else {
+                    desktopThemeToggle.classList.remove('active');
+                  }
+
+                  desktopThemeToggle.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    toggleTheme();
+                  });
+                }
+              });
+          });
+  </script>
+</body>
+
+</html>

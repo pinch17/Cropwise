@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CropWise - Expert Assistant for Cabbage & Kale Farming</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="./styles.css">
+
+
+</head>
+
+<body class="bg-gray-50">
+
+  <!-- Navigation -->
+  <nav class="navbar fixed w-full top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+
+        <div class="flex items-center">
+          <i class="fas fa-seedling logo-icon text-2xl mr-2"></i>
+          <span class="text-xl font-bold logo-text">CropWise</span>
+        </div>
+
+        <div class="hidden md:flex items-center space-x-8">
+          <a href="#features" class="nav-link hover:text-green-400 transition-colors font-medium">Features</a>
+          <a href="#how-it-works" class="nav-link hover:text-green-400 transition-colors font-medium">How It Works</a>
+          <a href="#contact"
+            class="bg-green-600 text-white px-6 py-2 rounded-full hover:bg-green-700 transition-colors font-medium">Get
+            Started</a>
+        </div>
+
+        <div class="md:hidden flex items-center">
+          <button class="mobile-menu-btn" id="mobile-menu-button">
+            <i class="fas fa-bars text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div class="mobile-menu md:hidden hidden" id="mobile-menu">
+      <div class="px-4 py-4 space-y-3">
+        <a href="#features" class="block py-2 text-gray-600 hover:text-green-600 font-medium">Features</a>
+        <a href="#how-it-works" class="block py-2 text-gray-600 hover:text-green-600 font-medium">How It Works</a>
+        <a href="#contact" class="block py-2 bg-green-600 text-white px-4 rounded-full text-center font-medium">Get
+          Started</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="gradient-bg min-h-screen flex items-center pt-16 relative her">
+
+    <!-- Floating background image layer -->
+    <div class="background-image">
+      <img src="https://i.ibb.co/gb2F7sxK/x.png" alt="Fresh Cabbage and Kale"
+        class="animate-float object-contain w-full h-full max-w-lg lg:max-w-xl xl:max-w-3xl mx-auto block opacity-40">
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 relative z-10">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+
+        <div class="text-white slide-in text-overlay">
+          <h1 class="text-4xl lg:text-4xl font-bold mb-6 leading-tight">
+            Expert Assistant for
+            <span class="text-green-200">Cabbage & Kale</span> Farmers
+          </h1>
+          <p class="text-xl mb-8 text-green-100 leading-relaxed">
+            Revolutionize your cabbage and kale farming with advanced disease detection, precise weather alerts,
+            accurate yield predictions, and real-time market insights - all designed specifically for brassica crop
+            cultivation.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4">
+
+            <button onclick="window.open('https://youtu.be/_-rKpTMsWR0', '_blank')"
+              class="bg-white hover:bg-gray-100 text-green-600 px-8 py-4 rounded-full text-lg font-semibold transition-all pulse-green">
+              <i class="fas fa-play mr-2"></i>
+              Watch Video
+            </button>
+
+            <button onclick="window.location.assign('./auth/')"
+              class="border-2 border-white text-white hover:bg-white hover:text-green-600 px-8 py-4 rounded-full text-lg font-semibold transition-all">
+              <i class="fas fa-leaf mr-2"></i>
+              Get Started
+            </button>
+
+          </div>
+        </div>
+
+        <div class="divy"></div>
+
+        <div class="animate-float text-overlay anon">
+          <div
+            class="bg-white bg-opacity-10 backdrop-filter backdrop-blur-lg rounded-3xl p-8 border border-white border-opacity-20">
+            <div class="text-center text-white">
+              <i class="fas fa-mobile-alt text-6xl mb-4 text-green-200"></i>
+              <h3 class="text-2xl font-semibold mb-4">Your Cabbage & Kale Expert</h3>
+              <div class="grid grid-cols-2 gap-4 text-sm">
+                <div class="bg-white bg-opacity-10 rounded-lg p-3">
+                  <i class="fas fa-bug text-red-300 mb-2"></i>
+                  <p>Black Rot Detection</p>
+                </div>
+                <div class="bg-white bg-opacity-10 rounded-lg p-3">
+                  <i class="fas fa-thermometer-half text-blue-300 mb-2"></i>
+                  <p>Frost Warnings</p>
+                </div>
+                <div class="bg-white bg-opacity-10 rounded-lg p-3">
+                  <i class="fas fa-weight text-yellow-300 mb-2"></i>
+                  <p>Head Size Prediction</p>
+                </div>
+                <div class="bg-white bg-opacity-10 rounded-lg p-3">
+                  <i class="fas fa-store text-green-300 mb-2"></i>
+                  <p>Daily Market Rates</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <h2 class="text-4xl font-bold text-gray-900 mb-4">Specialized Features for Cabbage & Kale Cultivation</h2>
+        <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+          Every feature is tailored specifically for brassica crops, helping you master the unique challenges of growing
+          premium cabbages and kales
+        </p>
+      </div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <!-- Feature 1 -->
+        <div class="feature-card bg-gradient-to-br from-green-50 to-green-100 p-8 rounded-2xl border border-green-200">
+          <div class="bg-green-500 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+            <i class="fas fa-search-plus text-white text-2xl"></i>
+          </div>
+          <h3 class="text-2xl font-semibold text-gray-900 mb-4">Brassica Disease Detection</h3>
+          <p class="text-gray-600 mb-4">
+            Snap a photo of your cabbage or kale leaves and instantly identify common diseases like Black Rot, Clubroot,
+            Downy Mildew, and pest infestations like cabbage worms and aphids. Get immediate treatment protocols.
+          </p>
+          <div class="flex items-center text-green-600 font-semibold">
+            <span>Instant Diagnosis</span>
+            <i class="fas fa-arrow-right ml-2"></i>
+          </div>
+        </div>
+
+        <!-- Feature 2 -->
+        <div class="feature-card bg-gradient-to-br from-blue-50 to-blue-100 p-8 rounded-2xl border border-blue-200">
+          <div class="bg-blue-500 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+            <i class="fas fa-snowflake text-white text-2xl"></i>
+          </div>
+          <h3 class="text-2xl font-semibold text-gray-900 mb-4">Frost & Weather Protection</h3>
+          <p class="text-gray-600 mb-4">
+            Get critical frost warnings and weather-based guidance specifically for cabbage and kale crops. Know exactly
+            when to cover your plants, when to harvest before cold damage, and optimal watering schedules.
+          </p>
+          <div class="flex items-center text-blue-600 font-semibold">
+            <span>Crop-Specific Alerts</span>
+            <i class="fas fa-arrow-right ml-2"></i>
+          </div>
+        </div>
+
+        <!-- Feature 3 -->
+        <div
+          class="feature-card bg-gradient-to-br from-purple-50 to-purple-100 p-8 rounded-2xl border border-purple-200">
+          <div class="bg-purple-500 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+            <i class="fas fa-calendar-check text-white text-2xl"></i>
+          </div>
+          <h3 class="text-2xl font-semibold text-gray-900 mb-4">Cabbage & Kale Growth Calendar</h3>
+          <p class="text-gray-600 mb-4">
+            Never miss critical timing for your brassica crops. Get reminders for transplanting seedlings, side-dressing
+            with fertilizer, pest control spraying, and optimal harvest windows for maximum head size and quality.
+          </p>
+          <div class="flex items-center text-purple-600 font-semibold">
+            <span>Perfect Timing</span>
+            <i class="fas fa-arrow-right ml-2"></i>
+          </div>
+        </div>
+
+        <!-- Feature 4 -->
+        <div
+          class="feature-card bg-gradient-to-br from-yellow-50 to-yellow-100 p-8 rounded-2xl border border-yellow-200">
+          <div class="bg-yellow-500 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+            <i class="fas fa-chart-line text-white text-2xl"></i>
+          </div>
+          <h3 class="text-2xl font-semibold text-gray-900 mb-4">Cabbage & Kale Market Prices</h3>
+          <p class="text-gray-600 mb-4">
+            Track daily wholesale and retail prices for different cabbage varieties (green, red, savoy) and kale types
+            (curly, lacinato, red) in your local markets. Time your harvest for maximum profit.
+          </p>
+          <div class="flex items-center text-yellow-600 font-semibold">
+            <span>Price Intelligence</span>
+            <i class="fas fa-arrow-right ml-2"></i>
+          </div>
+        </div>
+
+        <!-- Feature 5 -->
+        <div class="feature-card bg-gradient-to-br from-red-50 to-red-100 p-8 rounded-2xl border border-red-200">
+          <div class="bg-red-500 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+            <i class="fas fa-weight-hanging text-white text-2xl"></i>
+          </div>
+          <h3 class="text-2xl font-semibold text-gray-900 mb-4">Head Weight & Yield Prediction</h3>
+          <p class="text-gray-600 mb-4">
+            Based on your planting density, variety, and growing conditions, predict the expected head weight for
+            cabbages and leaf yield for kales. Plan your storage, transportation, and sales accordingly.
+          </p>
+          <div class="flex items-center text-red-600 font-semibold">
+            <span>Accurate Forecasts</span>
+            <i class="fas fa-arrow-right ml-2"></i>
+          </div>
+        </div>
+
+        <!-- Feature 6 -->
+        <div
+          class="feature-card bg-gradient-to-br from-indigo-50 to-indigo-100 p-8 rounded-2xl border border-indigo-200">
+          <div class="bg-indigo-500 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+            <i class="fas fa-clipboard-list text-white text-2xl"></i>
+          </div>
+          <h3 class="text-2xl font-semibold text-gray-900 mb-4">Brassica Farm Records</h3>
+          <p class="text-gray-600 mb-4">
+            Keep detailed records of seed varieties, planting dates, fertilizer applications, pest treatments, and
+            harvest data for both cabbage and kale plots. Track what works best for your specific conditions.
+          </p>
+          <div class="flex items-center text-indigo-600 font-semibold">
+            <span>Smart Logging</span>
+            <i class="fas fa-arrow-right ml-2"></i>
+          </div>
+        </div>
+
+        <!-- Feature 7 -->
+        <div
+          class="feature-card bg-gradient-to-br from-pink-50 to-pink-100 p-8 rounded-2xl border border-pink-200 md:col-span-2 lg:col-span-1">
+          <div class="bg-pink-500 w-16 h-16 rounded-2xl flex items-center justify-center mb-6">
+            <i class="fas fa-comment-dots text-white text-2xl"></i>
+          </div>
+          <h3 class="text-2xl font-semibold text-gray-900 mb-4">Brassica Expert Chat</h3>
+          <p class="text-gray-600 mb-4">
+            Ask specific questions like "Why are my cabbage heads cracking?" or "When should I harvest my kale for best
+            taste?" Get instant, expert advice tailored to cabbage and kale cultivation challenges.
+          </p>
+          <div class="flex items-center text-pink-600 font-semibold">
+            <span>24/7 Brassica Expert</span>
+            <i class="fas fa-arrow-right ml-2"></i>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Real World Example -->
+  <section id="how-it-works" class="py-20 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-2 gap-12 items-center">
+        <div>
+          <h2 class="text-4xl font-bold text-gray-900 mb-6">Your Personal Cabbage & Kale Farming Consultant</h2>
+          <p class="text-xl text-gray-600 mb-8">
+            Imagine having a brassica specialist who walks through your cabbage and kale fields every morning, checks
+            each plant for signs of disease, monitors soil moisture for optimal head development, tracks the weather for
+            frost protection, knows the best harvest timing for your varieties, and keeps you updated on market prices
+            for different cabbage and kale types.
+          </p>
+
+          <div class="space-y-6">
+            <div class="flex items-start">
+              <div class="bg-green-100 rounded-full p-3 mr-4">
+                <i class="fas fa-leaf text-green-600"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold text-gray-900 mb-2">Brassica-Specific Monitoring</h4>
+                <p class="text-gray-600">Specialized surveillance for cabbage head formation and kale leaf development
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-start">
+              <div class="bg-blue-100 rounded-full p-3 mr-4">
+                <i class="fas fa-database text-blue-600"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold text-gray-900 mb-2">Variety-Specific Knowledge</h4>
+                <p class="text-gray-600">Tracks different cabbage and kale varieties with tailored growing advice</p>
+              </div>
+            </div>
+
+            <div class="flex items-start">
+              <div class="bg-purple-100 rounded-full p-3 mr-4">
+                <i class="fas fa-clock text-purple-600"></i>
+              </div>
+              <div>
+                <h4 class="font-semibold text-gray-900 mb-2">Harvest Optimization</h4>
+                <p class="text-gray-600">Predicts perfect harvest timing for maximum quality and market value</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 shadow-2xl">
+          <div class="bg-gradient-to-r from-green-500 to-green-600 rounded-2xl p-6 text-white mb-6">
+            <h3 class="text-2xl font-bold mb-4">Advanced Technologies for Brassica Farming</h3>
+          </div>
+
+          <div class="space-y-4">
+            <div class="flex items-center p-4 bg-gray-50 rounded-xl">
+              <i class="fas fa-microscope text-green-600 text-2xl mr-4"></i>
+              <div>
+                <h4 class="font-semibold">Brassica Disease Recognition</h4>
+                <p class="text-sm text-gray-600">Expert database of cabbage & kale specific pathogens</p>
+              </div>
+            </div>
+
+            <div class="flex items-center p-4 bg-gray-50 rounded-xl">
+              <i class="fas fa-thermometer-three-quarters text-blue-600 text-2xl mr-4"></i>
+              <div>
+                <h4 class="font-semibold">Frost Protection System</h4>
+                <p class="text-sm text-gray-600">Critical temperature alerts for brassica crops</p>
+              </div>
+            </div>
+
+            <div class="flex items-center p-4 bg-gray-50 rounded-xl">
+              <i class="fas fa-balance-scale text-purple-600 text-2xl mr-4"></i>
+              <div>
+                <h4 class="font-semibold">Head Weight Prediction</h4>
+                <p class="text-sm text-gray-600">Advanced analytics for cabbage head size forecasting</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section id="contact" class="py-20 gradient-bg">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-4xl font-bold text-white mb-6">Ready to Master Cabbage & Kale Farming?</h2>
+      <p class="text-xl text-green-100 mb-8 max-w-2xl mx-auto">
+        Join thousands of brassica farmers already using CropWise to grow premium cabbages and kales with higher
+        yields, better quality, and increased profits through specialized expert guidance.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+        <button
+          class="bg-white hover:bg-gray-100 text-green-600 px-8 py-4 rounded-full text-lg font-semibold transition-all pulse-green">
+          <i class="fas fa-mobile-alt mr-2"></i>
+          Download CropWise
+        </button>
+        <button
+          class="border-2 border-white text-white hover:bg-white hover:text-green-600 px-8 py-4 rounded-full text-lg font-semibold transition-all">
+          <i class="fas fa-video mr-2"></i>
+          Watch Farm Demo
+        </button>
+      </div>
+
+      <div class="grid md:grid-cols-3 gap-8 text-white">
+        <div>
+          <div class="text-3xl font-bold text-green-200">15,000+</div>
+          <div class="text-green-100">Cabbage & Kale Farmers</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold text-green-200">98%</div>
+          <div class="text-green-100">Disease Detection Accuracy</div>
+        </div>
+        <div>
+          <div class="text-3xl font-bold text-green-200">40%</div>
+          <div class="text-green-100">Average Yield Increase</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="bg-gray-900 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid md:grid-cols-4 gap-8">
+        <div>
+          <div class="flex items-center mb-4">
+            <i class="fas fa-seedling text-green-500 text-2xl mr-2"></i>
+            <span class="text-xl font-bold">CropWise</span>
+          </div>
+          <p class="text-gray-400">
+            Specialized technology for cabbage and kale farmers seeking premium crop production and maximum
+            profitability.
+          </p>
+        </div>
+
+        <div>
+          <h4 class="font-semibold mb-4">Brassica Features</h4>
+          <ul class="space-y-2 text-gray-400">
+            <li>Black Rot Detection</li>
+            <li>Frost Protection</li>
+            <li>Head Weight Prediction</li>
+            <li>Variety-Specific Care</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold mb-4">Farmer Support</h4>
+          <ul class="space-y-2 text-gray-400">
+            <li>Growing Guides</li>
+            <li>Expert Chat</li>
+            <li>Video Tutorials</li>
+            <li>Farmer Community</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 class="font-semibold mb-4">Connect</h4>
+          <div class="flex space-x-4">
+            <i class="fab fa-facebook text-blue-500 text-xl cursor-pointer hover:text-blue-400"></i>
+            <i class="fab fa-twitter text-blue-400 text-xl cursor-pointer hover:text-blue-300"></i>
+            <i class="fab fa-instagram text-pink-500 text-xl cursor-pointer hover:text-pink-400"></i>
+            <i class="fab fa-whatsapp text-green-500 text-xl cursor-pointer hover:text-green-400"></i>
+          </div>
+        </div>
+      </div>
+
+      <div class="border-t border-gray-800 mt-8 pt-8 text-center text-gray-400">
+        <p>&copy; 2025 CropWise. All rights reserved. Specialized for cabbage & kale farming excellence.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js">
+
+  </script>
+</body>
+
+</html>

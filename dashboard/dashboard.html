@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CropWise Dashboard - Smart Farming Assistant</title>
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+  <!-- External Libraries -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+ 
+</head>
+
+<body>
+  <!-- Include Navigation -->
+  <div id="navigation-container"></div>
+
+  <!-- Main Content -->
+  <div class="lg:ml-64 main-content">
+    <!-- Include Mobile Header -->
+    <div id="mobile-header-container"></div>
+
+    <!-- Include Desktop Header -->
+    <div id="desktop-header-container"></div>
+
+    <!-- Page Content -->
+    <main class="p-6 mobile-header-spacing lg:pt-6">
+      <!-- Stats Cards -->
+      <div class="content-section">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div class="card-bg rounded-xl shadow-sm p-6 card-hover border border-primary w-full">
+            <div class="flex items-center">
+              <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                <i class="fas fa-leaf text-green-600 text-xl"></i>
+              </div>
+              <div>
+                <p class="text-2xl font-bold text-primary">98.2 %</p>
+                <p class="text-sm text-secondary">Healthy Plants</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-bg rounded-xl shadow-sm p-6 card-hover border border-primary">
+            <div class="flex items-center">
+              <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                <i class="fas fa-weight-hanging text-purple-600 text-xl"></i>
+              </div>
+              <div>
+                <p class="text-2xl font-bold text-primary">2.3 tonnes</p>
+                <p class="text-sm text-secondary">Expected Yield</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-bg rounded-xl shadow-sm p-6 card-hover border border-primary">
+            <div class="flex items-center">
+              <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-4">
+                <i class="fas fa-coins text-yellow-600 text-xl"></i>
+              </div>
+              <div>
+                <p class="text-2xl font-bold text-primary">Ksh 350 / kg</p>
+                <p class="text-sm text-secondary">Cabbage Price</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-bg rounded-xl shadow-sm p-6 card-hover border border-primary">
+            <div class="flex items-center">
+              <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-4">
+                <i class="fas fa-cash-register text-red-600 text-xl"></i>
+              </div>
+              <div>
+                <p class="text-2xl font-bold text-primary">Ksh 150 / kg</p>
+                <p class="text-sm text-secondary">Kale Price</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Main Dashboard Content -->
+      <div class="content-section">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Weather Widget -->
+          <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+            <h3 class="text-lg font-semibold text-primary mb-4 text-center">Today's Weather</h3>
+            <div class="text-center">
+              <div class="location-display text-secondary mb-3">
+                <i class="fas fa-map-marker-alt mr-2"></i>Loading location...
+              </div>
+              <i class="fas fa-sun weather-icon mb-4"></i>
+              <p class="text-3xl font-bold text-primary">22°C</p>
+              <p class="text-secondary mb-4">Sunny</p>
+              <div class="grid grid-cols-2 gap-4 text-sm">
+                <div>
+                  <p class="text-secondary">Humidity</p>
+                  <p class="font-semibold text-primary">65%</p>
+                </div>
+                <div>
+                  <p class="text-secondary">Wind</p>
+                  <p class="font-semibold text-primary">12 km/h</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Growth Progress -->
+          <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+            <h3 class="text-lg font-semibold text-primary mb-4">Growth Progress</h3>
+            <div class="space-y-4">
+              <div>
+                <div class="flex justify-between mb-2">
+                  <span class="text-sm text-secondary">Cabbage Growth</span>
+                  <span class="text-sm font-semibold text-green-600">75%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                  <div class="bg-green-600 h-2 rounded-full" style="width: 75%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-2">
+                  <span class="text-sm text-secondary">Kale Growth</span>
+                  <span class="text-sm font-semibold text-green-600">60%</span>
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2">
+                  <div class="bg-green-600 h-2 rounded-full" style="width: 60%"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent Activity -->
+          <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+            <h3 class="text-lg font-semibold text-primary mb-4">Recent Activity</h3>
+            <div class="space-y-3">
+              <div class="flex items-center">
+                <div class="w-2 h-2 bg-green-600 rounded-full mr-3"></div>
+                <p class="text-sm text-secondary">Disease scan completed</p>
+              </div>
+              <div class="flex items-center">
+                <div class="w-2 h-2 bg-blue-600 rounded-full mr-3"></div>
+                <p class="text-sm text-secondary">Weather alert sent</p>
+              </div>
+              <div class="flex items-center">
+                <div class="w-2 h-2 bg-yellow-600 rounded-full mr-3"></div>
+                <p class="text-sm text-secondary">Market prices updated</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Firebase Configuration -->
+  <script src="js/firebase-config.js"></script>
+
+  <!-- Common JavaScript -->
+  <script src="js/common.js"></script>
+
+  <!-- Dashboard JavaScript -->
+  <script src="js/dashboard.js"></script>
+
+  <script>
+    // Apply saved theme on page load
+    (function () {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+
+    // Theme toggle functionality
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+      const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+      // Apply theme to document
+      document.documentElement.setAttribute("data-theme", newTheme);
+
+      // Update toggle state for both mobile and desktop
+      const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+      const desktopThemeToggle = document.getElementById('desktop-theme-toggle');
+
+      if (mobileThemeToggle) {
+        void mobileThemeToggle.offsetWidth; // Force reflow
+        if (newTheme === "dark") {
+          mobileThemeToggle.classList.add("active");
+        } else {
+          mobileThemeToggle.classList.remove("active");
+        }
+      }
+
+      if (desktopThemeToggle) {
+        void desktopThemeToggle.offsetWidth; // Force reflow
+        if (newTheme === "dark") {
+          desktopThemeToggle.classList.add("active");
+        } else {
+          desktopThemeToggle.classList.remove("active");
+        }
+      }
+
+      // Save to localStorage
+      localStorage.setItem("theme", newTheme);
+
+      // Save to Firebase if user is logged in
+      const userData = getCurrentUserData();
+      if (userData) {
+        const emailKey = userData.email.replace(/\./g, "_");
+        database.ref("users/" + emailKey).update({ theme: newTheme })
+          .then(() => console.log("Theme saved to Firebase:", newTheme))
+          .catch(error => console.error("Error saving theme to Firebase:", error));
+      }
+    }
+
+    // Get current user data
+    function getCurrentUserData() {
+      try {
+        const userData = localStorage.getItem("userData");
+        return userData ? JSON.parse(userData) : null;
+      } catch (e) {
+        return null;
+      }
+    }
+
+    // Load components
+    document.addEventListener('DOMContentLoaded', function () {
+      // Load navigation
+      fetch('navigation.html')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('navigation-container').innerHTML = html;
+        });
+
+      // Load mobile header
+      fetch('mobile-header.html')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('mobile-header-container').innerHTML = html;
+
+          // Initialize mobile theme toggle after loading
+          const savedTheme = localStorage.getItem('theme') || 'dark';
+          const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+          if (mobileThemeToggle) {
+            void mobileThemeToggle.offsetWidth; // Force reflow
+            if (savedTheme === 'dark') {
+              mobileThemeToggle.classList.add('active');
+            } else {
+              mobileThemeToggle.classList.remove('active');
+            }
+
+            mobileThemeToggle.addEventListener('click', function (e) {
+              e.stopPropagation();
+              toggleTheme();
+            });
+          }
+        });
+
+      // Load desktop header
+      fetch('desktop-header.html')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('desktop-header-container').innerHTML = html;
+
+          // Initialize desktop theme toggle after loading
+          const savedTheme = localStorage.getItem('theme') || 'dark';
+          const desktopThemeToggle = document.getElementById('desktop-theme-toggle');
+          if (desktopThemeToggle) {
+            void desktopThemeToggle.offsetWidth; // Force reflow
+            if (savedTheme === 'dark') {
+              desktopThemeToggle.classList.add('active');
+            } else {
+              desktopThemeToggle.classList.remove('active');
+            }
+
+            desktopThemeToggle.addEventListener('click', function (e) {
+              e.stopPropagation();
+              toggleTheme();
+            });
+          }
+        });
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,2222 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Shamba AI Dashboard - Smart Farming Assistant</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    :root {
+      --bg-primary: #ffffff;
+      --bg-secondary: #f9fafb;
+      --text-primary: #111827;
+      --text-secondary: #6b7280;
+      --border-color: #e5e7eb;
+      --card-bg: #ffffff;
+      --sidebar-bg: #ffffff;
+      --header-bg: #ffffff;
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #111827;
+      --bg-secondary: #1f2937;
+      --text-primary: #f9fafb;
+      --text-secondary: #d1d5db;
+      --border-color: #374151;
+      --card-bg: #1f2937;
+      --sidebar-bg: #111827;
+      --header-bg: #1f2937;
+    }
+
+    * {
+      font-family: 'Outfit', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-secondary);
+      color: var(--text-primary);
+      transition: all 0.3s ease;
+    }
+
+    .bg-primary {
+      background-color: var(--bg-primary);
+    }
+
+    .bg-secondary {
+      background-color: var(--bg-secondary);
+    }
+
+    .text-primary {
+      color: var(--text-primary);
+    }
+
+    .text-secondary {
+      color: var(--text-secondary);
+    }
+
+    .border-primary {
+      border-color: var(--border-color);
+    }
+
+    .card-bg {
+      background-color: var(--card-bg);
+    }
+
+    .sidebar-bg {
+      background-color: var(--sidebar-bg);
+    }
+
+    .header-bg {
+      background-color: var(--header-bg);
+    }
+
+    .gradient-bg {
+      background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    }
+
+    .glassmorphism {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .sidebar-transition {
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .page-fade {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.3s ease-in-out;
+    }
+
+    .page-fade.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .card-hover {
+      transition: all 0.3s ease;
+    }
+
+    .card-hover:hover {
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .nav-item {
+      transition: all 0.2s ease;
+    }
+
+    .nav-item:hover {
+      background: rgba(16, 185, 129, 0.1);
+      border-radius: 8px;
+    }
+
+    .nav-item.active {
+      background: rgba(16, 185, 129, 0.2);
+      border-radius: 8px;
+      border-left: 4px solid #10b981;
+    }
+
+    .file-upload-area {
+      border: 2px dashed var(--border-color);
+      transition: all 0.3s ease;
+    }
+
+    .file-upload-area:hover {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.05);
+    }
+
+    .file-upload-area.dragover {
+      border-color: #10b981;
+      background: rgba(16, 185, 129, 0.1);
+    }
+
+    .chat-bubble {
+      animation: slideUp 0.3s ease-out;
+    }
+
+    @keyframes slideUp {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .pulse-green {
+      animation: pulse-green 2s infinite;
+    }
+
+    @keyframes pulse-green {
+
+      0%,
+      100% {
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      }
+
+      70% {
+        box-shadow: 0 0 0 10px rgba(16, 185, 129, 0);
+      }
+    }
+
+    .weather-icon {
+      font-size: 3rem;
+      color: #10b981;
+    }
+
+    .progress-ring {
+      transform: rotate(-90deg);
+    }
+
+    .progress-ring-circle {
+      stroke-dasharray: 251.2;
+      stroke-dashoffset: 251.2;
+      transition: stroke-dashoffset 0.5s ease-in-out;
+    }
+
+    .scrollbar-hide {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Fixed header for mobile */
+    .fixed-header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 60;
+    }
+
+    .mobile-header-spacing {
+      padding-top: 80px;
+    }
+
+    /* Sidebar scrolling */
+    .sidebar-content {
+      height: calc(100vh - 120px);
+      overflow-y: auto;
+    }
+
+    .bg-green-51 {
+      border: #10b98183 solid 1px;
+    }
+
+    .bg-blue-51 {
+      border: #3b82f683 solid 1px;
+    }
+
+    .bg-purple-51 {
+      border: #a955f775 solid 1px;
+    }
+
+    .sidebar-profile {
+      position: sticky;
+      bottom: 0;
+      z-index: 10;
+      box-shadow: 0 -4px 6px -1px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Dark mode toggle */
+    .theme-toggle {
+      position: relative;
+      width: 50px;
+      height: 30px;
+      background: #37415119;
+      border-radius: 15px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle.active {
+      background: #10b981;
+    }
+
+    .theme-toggle::before {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 24px;
+      height: 24px;
+      background: white;
+      border-radius: 50%;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle.active::before {
+      transform: translateX(21px);
+    }
+
+    .theme-icon {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .sun-icon {
+      right: 6px;
+      color: #fbbf24;
+      opacity: 0;
+    }
+
+    .moon-icon {
+      left: 6px;
+      color: #ddd6fe;
+      opacity: 1;
+    }
+
+    .theme-toggle.active .sun-icon {
+      opacity: 1;
+    }
+
+    .theme-toggle.active .moon-icon {
+      opacity: 0;
+    }
+
+    /* Ensure proper spacing for PDF export */
+    .main-content {
+      min-height: auto;
+    }
+
+    .content-section {
+      margin-bottom: 2rem;
+    }
+
+    /* Remove fixed heights for PDF export */
+    .chart-container {
+      height: 400px;
+    }
+
+    @media (max-width: 1024px) {
+      .chart-container {
+        height: 300px;
+      }
+    }
+
+    /* Enhanced responsive design */
+    @media (max-width: 768px) {
+      .mobile-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .mobile-full {
+        width: 100%;
+      }
+    }
+
+    /* Print styles for PDF export */
+    @media print {
+      .fixed-header {
+        position: relative;
+      }
+
+      .mobile-header-spacing {
+        padding-top: 0;
+      }
+
+      .sidebar-transition {
+        transform: none !important;
+      }
+
+      .page-content {
+        page-break-inside: avoid;
+      }
+    }
+
+    .sidebar-content::-webkit-scrollbar {
+      display: none;
+      /* For Chrome, Safari, and Opera */
+    }
+
+    body::-webkit-scrollbar {
+      display: none;
+    }
+
+    @media screen and (max-width: 767px) {
+      .card-bg {
+        translate: -8px 0px;
+        width: 104%;
+      }
+
+      .baa {
+        padding-top: 70px;
+        text-align: center !important;
+      }
+
+      .upaa {
+        margin-top: 20px;
+      }
+
+      .botx {
+        display: none;
+        padding: 0px !important;
+      }
+
+      /* Styles for the dot */
+      .boty {
+        height: 3px;
+        width: 3px;
+        margin-right: 6px;
+        margin-top: 6px;
+        background-color: #568568;
+        border-radius: 50%;
+        display: inline-block;
+        animation: pulse-online 3s infinite cubic-bezier(0.66, 0, 0.34, 0.5);
+      }
+
+      @keyframes pulse-online {
+        0% {
+          box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+        }
+
+        70% {
+          box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+        }
+
+        100% {
+          box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.4);
+        }
+      }
+    }
+
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+
+    /* Custom input styles for yield prediction */
+    .custom-select {
+      position: relative;
+      cursor: pointer;
+    }
+
+    .custom-select-dropdown {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      z-index: 1000;
+      max-height: 200px;
+      overflow-y: auto;
+      margin-top: 4px;
+    }
+
+    .custom-select-option {
+      padding: 12px 16px;
+      cursor: pointer;
+      transition: background-color 0.2s ease;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .custom-select-option:last-child {
+      border-bottom: none;
+    }
+
+    .custom-select-option:hover {
+      background-color: rgba(16, 185, 129, 0.1);
+    }
+
+    .custom-select-input {
+      background: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px 16px;
+      padding-right: 40px;
+      width: 100%;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .custom-select-arrow {
+      position: absolute;
+      right: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      transition: transform 0.3s ease;
+      color: var(--text-secondary);
+    }
+
+    .custom-select.open .custom-select-arrow {
+      transform: translateY(-50%) rotate(180deg);
+    }
+
+    /* Responsive chat input fix */
+    .chat-input-container {
+      display: flex;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .chat-input-container input {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .chat-input-container button {
+      flex-shrink: 0;
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    @media (max-width: 640px) {
+      .chat-input-container {
+        gap: 6px;
+      }
+
+      .chat-input-container button {
+        width: 42px;
+        height: 42px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- =============================================== -->
+  <!-- FIXED MOBILE HEADER SECTION START -->
+  <!-- =============================================== -->
+
+  <div class="lg:hidden fixed-header header-bg border-b border-primary shadow-sm ">
+    <div class="flex justify-between items-center p-4">
+      <div class="flex items-center">
+
+        <!-- Mobile Menu Button -->
+        <button id="mobile-menu-btn" class="bg-green-600 text-white p-2 rounded-lg shadow-lg mr-4 z-50">
+          <i class="fas fa-bars"></i>
+        </button>
+
+        <!-- Page Title and Subtitle -->
+        <div>
+          <h2 id="mobile-page-title" class="text-lg font-bold text-primary">Dashboard</h2>
+          <p class="text-xs text-secondary md:hidden">Track Extensively</p>
+          <p class="text-xs text-secondary hidden md:block" id="mobile-page-subtitle">Track expenses, sales, and
+            activities</p>
+        </div>
+
+      </div>
+
+      <div class="flex items-center space-x-5">
+
+        <!-- Theme Toggle -->
+        <div class="theme-toggle" id="theme-toggle">
+          <i class="fas fa-moon theme-icon moon-icon"></i>
+          <i class="fas fa-sun theme-icon sun-icon"></i>
+        </div>
+
+        <!-- Notifications -->
+        <div class="relative">
+          <i class="fas fa-bell text-secondary text-xl cursor-pointer hover:text-green-600 rotate-45"
+            style="transform: rotate(45deg);"></i>
+          <span
+            class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-4 h-4 flex items-center justify-center">3</span>
+        </div>
+
+        <!-- User Profile -->
+        <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+          <i class="fas fa-user text-white text-sm"></i>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- =============================================== -->
+  <!-- FIXED MOBILE HEADER SECTION END -->
+  <!-- =============================================== -->
+
+  <!-- =============================================== -->
+  <!-- SIDEBAR SECTION START -->
+  <!-- =============================================== -->
+
+  <div id="sidebar"
+    class="fixed left-0 top-0 h-full w-64 sidebar-bg shadow-xl z-40 transform -translate-x-full lg:translate-x-0 sidebar-transition border-r border-primary">
+
+    <div class="p-6 border-b border-primary">
+      <div class="flex items-center baa">
+        <i class="fas fa-seedling text-green-600 text-2xl mr-3"></i>
+        <h1 class="text-xl font-bold text-primary">Shamba AI</h1>
+      </div>
+      <p class="text-sm text-secondary mt-1">Smart Farming Assistant</p>
+    </div>
+
+    <div class="sidebar-content">
+      <nav class="p-4">
+        <ul class="space-y-2">
+          <li>
+            <a href="#" class="nav-item active flex items-center p-3 text-secondary hover:text-green-600"
+              data-page="dashboard">
+              <i class="fas fa-home mr-3 w-5"></i>
+              <span>Dashboard</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-item flex items-center p-3 text-secondary hover:text-green-600"
+              data-page="disease-detection">
+              <i class="fas fa-search-plus mr-3 w-5"></i>
+              <span>Disease Detection</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-item flex items-center p-3 text-secondary hover:text-green-600"
+              data-page="weather-advice">
+              <i class="fas fa-cloud-sun mr-3 w-5"></i>
+              <span>Weather Advice</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-item flex items-center p-3 text-secondary hover:text-green-600"
+              data-page="growth-tracking">
+              <i class="fas fa-seedling mr-3 w-5"></i>
+              <span>Growth Tracking</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-item flex items-center p-3 text-secondary hover:text-green-600"
+              data-page="market-prices">
+              <i class="fas fa-chart-line mr-3 w-5"></i>
+              <span>Market Prices</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-item flex items-center p-3 text-secondary hover:text-green-600"
+              data-page="yield-prediction">
+              <i class="fas fa-calculator mr-3 w-5"></i>
+              <span>Yield Prediction</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-item flex items-center p-3 text-secondary hover:text-green-600"
+              data-page="farm-records">
+              <i class="fas fa-clipboard-list mr-3 w-5"></i>
+              <span>Farm Records</span>
+            </a>
+          </li>
+          <li>
+            <a href="#" class="nav-item flex items-center p-3 text-secondary hover:text-green-600" data-page="ai-chat">
+              <i class="fas fa-comments mr-3 w-5"></i>
+              <span>AI Chat Support</span>
+            </a>
+          </li>
+          <li>
+            <div style="height: 120px;"></div>
+          </li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Sidebar Profile -->
+    <div class="sidebar-profile p-4 border-t border-primary sidebar-bg">
+      <div class="flex items-center justify-between mb-3">
+        <div class="flex items-center">
+          <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center mr-3">
+            <i class="fas fa-user text-white"></i>
+          </div>
+          <div>
+            <p class="text-sm font-medium text-primary">John Farmer</p>
+            <p class="text-xs text-secondary">Premium Plan</p>
+          </div>
+        </div>
+        <div class="theme-toggle hidden lg:block" id="desktop-theme-toggle">
+          <i class="fas fa-moon theme-icon moon-icon"></i>
+          <i class="fas fa-sun theme-icon sun-icon"></i>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- =============================================== -->
+  <!-- SIDEBAR SECTION END -->
+  <!-- =============================================== -->
+
+  <!-- Main Content -->
+  <div class="lg:ml-64 main-content">
+
+    <!-- =============================================== -->
+    <!-- DESKTOP HEADER SECTION START -->
+    <!-- =============================================== -->
+
+    <header class="hidden lg:block header-bg shadow-sm border-b border-primary p-5">
+      <div class="flex justify-between items-center">
+
+        <div>
+          <h2 id="page-title" class="text-2xl font-bold text-primary">Dashboard</h2>
+          <p id="page-subtitle" class="text-secondary mt-1">Welcome back to your smart farming assistant</p>
+        </div>
+
+        <div class="flex items-center space-x-5">
+
+          <div class="relative" style="margin-top: 6px;">
+            <i class="fas fa-bell text-secondary text-xl cursor-pointer hover:text-green-600"
+              style="transform: rotate(45deg);"></i>
+            <span
+              class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+          </div>
+
+          <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center">
+            <i class="fas fa-user text-white"></i>
+          </div>
+
+        </div>
+      </div>
+    </header>
+
+    <!-- =============================================== -->
+    <!-- DESKTOP HEADER SECTION END -->
+    <!-- =============================================== -->
+
+    <!-- Page Content One : DASHBOARD -->
+    <main class="p-6 mobile-header-spacing lg:pt-6">
+
+      <!-- =============================================== -->
+      <!-- DASHBOARD PAGE START -->
+      <!-- =============================================== -->
+
+      <div id="dashboard-page" class="page-content page-fade active lg:-mt-16 mt-6">
+        <!-- Stats Cards -->
+        <div class="content-section">
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+            <div class="card-bg rounded-xl shadow-sm p-6 card-hover border border-primary w-full ">
+              <div class="flex items-center">
+                <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-4">
+                  <i class="fas fa-leaf text-green-600 text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-2xl font-bold text-primary">98.2 %</p>
+                  <p class="text-sm text-secondary">Healthy Plants</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-bg rounded-xl shadow-sm p-6 card-hover border border-primary">
+              <div class="flex items-center">
+                <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mr-4">
+                  <i class="fas fa-weight-hanging text-purple-600 text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-2xl font-bold text-primary">2.3 tonnes</p>
+                  <p class="text-sm text-secondary">Expected Yield</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-bg rounded-xl shadow-sm p-6 card-hover border border-primary">
+              <div class="flex items-center">
+                <div class="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center mr-4">
+                  <i class="fas fa-coins text-yellow-600 text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-2xl font-bold text-primary">Ksh 350 / kg</p>
+                  <p class="text-sm text-secondary">Cabbage Price</p>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-bg rounded-xl shadow-sm p-6 card-hover border border-primary">
+              <div class="flex items-center">
+                <div class="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-4">
+                  <i class="fas fa-cash-register text-red-600 text-xl"></i>
+                </div>
+                <div>
+                  <p class="text-2xl font-bold text-primary">Ksh 150 / kg</p>
+                  <p class="text-sm text-secondary">Kale Price</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Main Dashboard Content -->
+        <div class="content-section">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Weather Widget -->
+            <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+              <h3 class="text-lg font-semibold text-primary mb-4 text-center">Today's Weather</h3>
+              <div class="text-center">
+                <i class="fas fa-sun weather-icon mb-4"></i>
+                <p class="text-3xl font-bold text-primary">22°C</p>
+                <p class="text-secondary mb-4">Sunny</p>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <p class="text-secondary">Humidity</p>
+                    <p class="font-semibold text-primary">65%</p>
+                  </div>
+                  <div>
+                    <p class="text-secondary">Wind</p>
+                    <p class="font-semibold text-primary">12 km/h</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Growth Progress -->
+            <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+              <h3 class="text-lg font-semibold text-primary mb-4">Growth Progress</h3>
+              <div class="space-y-4">
+                <div>
+                  <div class="flex justify-between mb-2">
+                    <span class="text-sm text-secondary">Cabbage Growth</span>
+                    <span class="text-sm font-semibold text-green-600">75%</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-green-600 h-2 rounded-full" style="width: 75%"></div>
+                  </div>
+                </div>
+                <div>
+                  <div class="flex justify-between mb-2">
+                    <span class="text-sm text-secondary">Kale Growth</span>
+                    <span class="text-sm font-semibold text-green-600">60%</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-2">
+                    <div class="bg-green-600 h-2 rounded-full" style="width: 60%"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+              <h3 class="text-lg font-semibold text-primary mb-4">Recent Activity</h3>
+              <div class="space-y-3">
+                <div class="flex items-center">
+                  <div class="w-2 h-2 bg-green-600 rounded-full mr-3"></div>
+                  <p class="text-sm text-secondary">Disease scan completed</p>
+                </div>
+                <div class="flex items-center">
+                  <div class="w-2 h-2 bg-blue-600 rounded-full mr-3"></div>
+                  <p class="text-sm text-secondary">Weather alert sent</p>
+                </div>
+                <div class="flex items-center">
+                  <div class="w-2 h-2 bg-yellow-600 rounded-full mr-3"></div>
+                  <p class="text-sm text-secondary">Market prices updated</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =============================================== -->
+      <!-- DASHBOARD PAGE END -->
+      <!-- =============================================== -->
+
+      <!-- =============================================== -->
+      <!-- DISEASE DETECTION PAGE START -->
+      <!-- =============================================== -->
+
+      <div id="disease-detection-page" class="page-content page-fade hidden">
+        <div class="content-section">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:-mt-16 mt-6">
+
+            <!-- Upload Section -->
+            <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+              <h3 class="text-lg font-semibold text-primary mb-4">Upload Plant Photo</h3>
+              <div class="file-upload-area rounded-lg p-8 text-center" id="file-upload-area">
+                <i class="fas fa-cloud-upload-alt text-4xl text-secondary mb-4"></i>
+                <p class="text-secondary mb-2">Drag and drop your plant photo here</p>
+                <p class="text-sm text-secondary mb-4">or click to browse files</p>
+                <input type="file" id="photo-upload" class="hidden" accept="image/*">
+                <button class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700"
+                  onclick="document.getElementById('photo-upload').click()">
+                  Select Photo
+                </button>
+              </div>
+              <div id="photo-preview" class="mt-4 hidden">
+                <img id="preview-image" class="w-full h-48 object-cover rounded-lg" alt="Preview">
+                <button id="analyze-btn"
+                  class="w-full mt-4 bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 font-semibold">
+                  <i class="fas fa-search mr-2"></i>Analyze Plant
+                </button>
+              </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+              <h3 class="text-lg font-semibold text-primary mb-4">Analysis Results</h3>
+              <div id="analysis-results" class="text-center text-secondary py-8">
+                <i class="fas fa-microscope text-4xl mb-4"></i>
+                <p>Upload a photo to get started</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Detection History -->
+        <div class="content-section">
+          <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+            <h3 class="text-lg font-semibold text-primary mb-4">Detection History</h3>
+            <div class="overflow-x-auto hide-scrollbar">
+              <table class="w-full text-sm tub">
+                <thead class="bg-secondary">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-primary">Date</th>
+                    <th class="px-4 py-3 text-left text-primary">Crop</th>
+                    <th class="px-4 py-3 text-left text-primary">Detection</th>
+                    <th class="px-4 py-3 text-left text-primary">Confidence</th>
+                    <th class="px-4 py-3 text-left text-primary">Status</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                  <tr>
+                    <td class="px-4 py-3 text-secondary">2024-01-15</td>
+                    <td class="px-4 py-3 text-secondary">Cabbage</td>
+                    <td class="px-4 py-3 text-secondary">Healthy</td>
+                    <td class="px-4 py-3 text-secondary">95%</td>
+                    <td class="px-4 py-3"><span
+                        class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">Healthy</span></td>
+                  </tr>
+                  <tr>
+                    <td class="px-4 py-3 text-secondary">2024-01-14</td>
+                    <td class="px-4 py-3 text-secondary">Kale</td>
+                    <td class="px-4 py-3 text-secondary">Black Rot</td>
+                    <td class="px-4 py-3 text-secondary">89%</td>
+                    <td class="px-4 py-3"><span
+                        class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs">Disease</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =============================================== -->
+      <!-- DISEASE DETECTION PAGE END -->
+      <!-- =============================================== -->
+
+      <!-- =============================================== -->
+      <!-- WEATHER ADVICE PAGE START -->
+      <!-- =============================================== -->
+
+      <div id="weather-advice-page" class="page-content page-fade hidden">
+        <div class="content-section">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:-mt-16 mt-4">
+
+            <!-- Current Weather -->
+            <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+              <h3 class="text-lg font-semibold text-primary mb-4 text-center">Current Weather</h3>
+              <div class="text-center">
+                <i class="fas fa-sun text-6xl text-yellow-500 mb-4"></i>
+                <p class="text-3xl font-bold text-primary">22°C</p>
+                <p class="text-secondary mb-4">Sunny</p>
+                <div class="grid grid-cols-2 gap-4 text-sm">
+                  <div>
+                    <p class="text-secondary">Humidity</p>
+                    <p class="font-semibold text-primary">65%</p>
+                  </div>
+                  <div>
+                    <p class="text-secondary">Wind</p>
+                    <p class="font-semibold text-primary">12 km/h</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Smart Recommendations -->
+            <div class="lg:col-span-2 card-bg rounded-xl shadow-sm p-6 border border-primary">
+              <h3 class="text-lg font-semibold text-primary mb-4">Smart Recommendations</h3>
+              <div class="space-y-4">
+                <div class="bg-green-50 border-l-4 border-green-500 p-4 rounded">
+                  <div class="flex items-center">
+                    <i class="fas fa-droplet text-green-600 mr-3"></i>
+                    <div>
+                      <p class="font-semibold text-green-800">Perfect Watering Conditions</p>
+                      <p class="text-green-700">Low humidity detected. Water your cabbage and kale plants early morning
+                        for best absorption.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded">
+                  <div class="flex items-center">
+                    <i class="fas fa-spray-can text-blue-600 mr-3"></i>
+                    <div>
+                      <p class="font-semibold text-blue-800">Ideal Spraying Weather</p>
+                      <p class="text-blue-700">Low wind conditions. Good time for pest control spraying on your brassica
+                        crops.</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded">
+                  <div class="flex items-center">
+                    <i class="fas fa-sun text-yellow-600 mr-3"></i>
+                    <div>
+                      <p class="font-semibold text-yellow-800">Optimal Growing Conditions</p>
+                      <p class="text-yellow-700">Temperature is perfect for cabbage and kale growth. Expect good
+                        photosynthesis today.</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Weekly Forecast -->
+        <div class="content-section">
+          <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+            <h3 class="text-lg font-semibold text-primary mb-4 text-center">7-Day Forecast</h3>
+            <div class="grid grid-cols-3 md:grid-cols-7 gap-4">
+              <div class="text-center">
+                <p class="text-sm text-secondary mb-2">Today</p>
+                <i class="fas fa-sun text-yellow-500 text-2xl mb-2"></i>
+                <p class="text-sm font-semibold text-primary">22°C</p>
+              </div>
+              <div class="text-center">
+                <p class="text-sm text-secondary mb-2">Tomorrow</p>
+                <i class="fas fa-cloud-sun text-gray-500 text-2xl mb-2"></i>
+                <p class="text-sm font-semibold text-primary">20°C</p>
+              </div>
+              <div class="text-center">
+                <p class="text-sm text-secondary mb-2">Wed</p>
+                <i class="fas fa-cloud-rain text-blue-500 text-2xl mb-2"></i>
+                <p class="text-sm font-semibold text-primary">18°C</p>
+              </div>
+              <div class="text-center">
+                <p class="text-sm text-secondary mb-2">Thu</p>
+                <i class="fas fa-cloud text-gray-500 text-2xl mb-2"></i>
+                <p class="text-sm font-semibold text-primary">19°C</p>
+              </div>
+              <div class="text-center">
+                <p class="text-sm text-secondary mb-2">Fri</p>
+                <i class="fas fa-sun text-yellow-500 text-2xl mb-2"></i>
+                <p class="text-sm font-semibold text-primary">23°C</p>
+              </div>
+              <div class="text-center">
+                <p class="text-sm text-secondary mb-2">Sat</p>
+                <i class="fas fa-sun text-yellow-500 text-2xl mb-2"></i>
+                <p class="text-sm font-semibold text-primary">25°C</p>
+              </div>
+              <div class="text-center">
+                <p class="text-sm text-secondary mb-2">Sun</p>
+                <i class="fas fa-cloud-sun text-gray-500 text-2xl mb-2"></i>
+                <p class="text-sm font-semibold text-primary">21°C</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =============================================== -->
+      <!-- WEATHER ADVICE PAGE END -->
+      <!-- =============================================== -->
+
+      <!-- =============================================== -->
+      <!-- GROWTH TRACKING PAGE START -->
+      <!-- =============================================== -->
+
+      <div id="growth-tracking-page" class="page-content page-fade hidden">
+        <div class="content-section">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:-mt-16 mt-4 ">
+            <!-- Growth Calendar -->
+            <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+              <h3 class="text-lg font-semibold text-primary mb-4">Growth Calendar</h3>
+              <div class="space-y-4">
+                <div class="flex items-center p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                  <div class="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mr-4">
+                    <i class="fas fa-seedling text-green-600"></i>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-semibold text-green-800">Planting Complete</p>
+                    <p class="text-sm text-green-700">Cabbage and kale seeds planted</p>
+                    <p class="text-xs text-green-600">Completed 2 weeks ago</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                  <div class="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mr-4">
+                    <i class="fas fa-tint text-blue-600"></i>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-semibold text-blue-800">First Fertilizer Application</p>
+                    <p class="text-sm text-blue-700">Apply nitrogen-rich fertilizer</p>
+                    <p class="text-xs text-blue-600">Due in 3 days</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-500">
+                  <div class="w-12 h-12 bg-yellow-100 rounded-full flex items-center justify-center mr-4">
+                    <i class="fas fa-spray-can text-yellow-600"></i>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-semibold text-yellow-800">Pest Control Spraying</p>
+                    <p class="text-sm text-yellow-700">Preventive pest control treatment</p>
+                    <p class="text-xs text-yellow-600">Due in 1 week</p>
+                  </div>
+                </div>
+
+                <div class="flex items-center p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
+                  <div class="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mr-4">
+                    <i class="fas fa-cut text-purple-600"></i>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-semibold text-purple-800">Harvest Time</p>
+                    <p class="text-sm text-purple-700">Cabbage and kale ready for harvest</p>
+                    <p class="text-xs text-purple-600">Expected in 6 weeks</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Growth Progress -->
+            <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+              <h3 class="text-lg font-semibold text-primary mb-4">Growth Progress</h3>
+              <div class="space-y-6">
+                <div>
+                  <div class="flex justify-between mb-2">
+                    <span class="text-sm font-medium text-primary">Cabbage Growth</span>
+                    <span class="text-sm text-secondary">Week 2 of 8</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div class="bg-green-600 h-3 rounded-full" style="width: 25%"></div>
+                  </div>
+                  <p class="text-xs text-secondary mt-1">Seedling stage - Developing true leaves</p>
+                </div>
+
+                <div>
+                  <div class="flex justify-between mb-2">
+                    <span class="text-sm font-medium text-primary">Kale Growth</span>
+                    <span class="text-sm text-secondary">Week 2 of 6</span>
+                  </div>
+                  <div class="w-full bg-gray-200 rounded-full h-3">
+                    <div class="bg-green-600 h-3 rounded-full" style="width: 33%"></div>
+                  </div>
+                  <p class="text-xs text-secondary mt-1">Vegetative stage - Leaf development</p>
+                </div>
+              </div>
+
+              <div class="mt-6 p-4 bg-secondary rounded-lg">
+                <h4 class="font-semibold text-primary mb-2">Next Action Required</h4>
+                <p class="text-sm text-secondary">Water plants thoroughly. Soil moisture is getting low.</p>
+                <button class="mt-2 bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700">
+                  Mark as Complete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Growth Chart -->
+        <div class="content-section">
+          <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+            <h3 class="text-lg font-semibold text-primary mb-4">Growth Chart</h3>
+            <div class="chart-container">
+              <canvas id="growth-chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =============================================== -->
+      <!-- GROWTH TRACKING PAGE END -->
+      <!-- =============================================== -->
+
+      <!-- =============================================== -->
+      <!-- MARKET PRICES PAGE START -->
+      <!-- =============================================== -->
+
+      <div id="market-prices-page" class="page-content page-fade hidden">
+        <div class="content-section">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:-mt-16 mt-4">
+            <!-- Price Cards -->
+            <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-primary">Cabbage Prices</h3>
+                <i class="fas fa-leaf text-green-600 text-xl"></i>
+              </div>
+              <div class="space-y-3">
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-secondary">Green Cabbage</span>
+                  <span class="font-semibold text-green-600">KES 350/kg</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-secondary">Red Cabbage</span>
+                  <span class="font-semibold text-red-600">KES 448/kg</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-secondary">Savoy Cabbage</span>
+                  <span class="font-semibold text-purple-600">KES 532/kg</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-primary">Kale Prices</h3>
+                <i class="fas fa-leaf text-green-600 text-xl"></i>
+              </div>
+              <div class="space-y-3">
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-secondary">Curly Kale</span>
+                  <span class="font-semibold text-green-600">KES 630/kg</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-secondary">Lacinato Kale</span>
+                  <span class="font-semibold text-blue-600">KES 728/kg</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-secondary">Red Kale</span>
+                  <span class="font-semibold text-red-600">KES 812/kg</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="text-lg font-semibold text-primary">Price Trends</h3>
+                <i class="fas fa-chart-line text-blue-600 text-xl"></i>
+              </div>
+              <div class="space-y-3">
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-secondary">This Week</span>
+                  <span class="text-sm font-semibold text-green-600">+5.2%</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-secondary">This Month</span>
+                  <span class="text-sm font-semibold text-green-600">+12.8%</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-secondary">Season</span>
+                  <span class="text-sm font-semibold text-red-600">-3.5%</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="content-section">
+          <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+            <h3 class="text-lg font-semibold text-primary mb-4">Price Trends (Last 30 Days)</h3>
+            <div class="chart-container">
+              <canvas id="price-chart"></canvas>
+            </div>
+          </div>
+        </div>
+
+        <!-- Market Insights -->
+        <div class="content-section">
+          <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+            <h3 class="text-lg font-semibold text-primary mb-4">Market Insights</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="space-y-4">
+                <div class="p-4 bg-green-50 rounded-lg border-l-4 border-green-500">
+                  <h4 class="font-semibold text-green-800 mb-2">Best Selling Time</h4>
+                  <p class="text-sm text-green-700">Cabbage prices are expected to peak in 2-3 weeks. Consider timing
+                    your harvest accordingly.</p>
+                </div>
+                <div class="p-4 bg-blue-50 rounded-lg border-l-4 border-blue-500">
+                  <h4 class="font-semibold text-blue-800 mb-2">Demand Forecast</h4>
+                  <p class="text-sm text-blue-700">High demand for organic kale varieties. Premium prices available for
+                    certified organic produce.</p>
+                </div>
+              </div>
+              <div class="space-y-4">
+                <div class="p-4 bg-yellow-50 rounded-lg border-l-4 border-yellow-500">
+                  <h4 class="font-semibold text-yellow-800 mb-2">Seasonal Trends</h4>
+                  <p class="text-sm text-yellow-700">Winter varieties showing stronger price performance. Focus on
+                    cold-resistant cultivars.</p>
+                </div>
+                <div class="p-4 bg-purple-50 rounded-lg border-l-4 border-purple-500">
+                  <h4 class="font-semibold text-purple-800 mb-2">Export Opportunities</h4>
+                  <p class="text-sm text-purple-700">International markets showing increased interest in specialty kale
+                    varieties.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =============================================== -->
+      <!-- MARKET PRICES PAGE END -->
+      <!-- =============================================== -->
+
+      <!-- =============================================== -->
+      <!-- YIELD PREDICTION PAGE START -->
+      <!-- =============================================== -->
+
+      <div id="yield-prediction-page" class="page-content page-fade hidden">
+        <div class="content-section">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 lg:-mt-16 mt-4">
+            <!-- Yield Calculator -->
+            <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+              <h3 class="text-lg font-semibold text-primary mb-4">Yield Calculator</h3>
+              <form class="space-y-4">
+                <div>
+                  <label class="block text-sm font-medium text-primary mb-2">Crop Type</label>
+                  <div class="custom-select" data-field="cropType">
+                    <div class="custom-select-input">
+                      <span class="custom-select-value text-primary">Select Crop Type</span>
+                      <i class="fas fa-chevron-down custom-select-arrow"></i>
+                    </div>
+                    <div class="custom-select-dropdown hidden">
+                      <div class="custom-select-option text-primary" data-value="cabbage">Cabbage</div>
+                      <div class="custom-select-option text-primary" data-value="kale">Kale</div>
+                      <div class="custom-select-option text-primary" data-value="both">Both</div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-primary mb-2">Farm Area (hectares)</label>
+                  <input type="number" placeholder="e.g., 2.5"
+                    class="w-full p-3 border border-primary rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-primary text-primary">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-primary mb-2">Planting Density (plants/hectare)</label>
+                  <input type="number" placeholder="e.g., 40000"
+                    class="w-full p-3 border border-primary rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-primary text-primary">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-primary mb-2">Variety</label>
+                  <div class="custom-select" data-field="variety">
+                    <div class="custom-select-input">
+                      <span class="custom-select-value text-primary">Select Variety</span>
+                      <i class="fas fa-chevron-down custom-select-arrow"></i>
+                    </div>
+                    <div class="custom-select-dropdown hidden">
+                      <div class="custom-select-option text-primary" data-value="standard">Standard Variety</div>
+                      <div class="custom-select-option text-primary" data-value="hybrid">High-Yield Hybrid</div>
+                      <div class="custom-select-option text-primary" data-value="organic">Organic Variety</div>
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-sm font-medium text-primary mb-2">Growing Conditions</label>
+                  <div class="custom-select" data-field="conditions">
+                    <div class="custom-select-input">
+                      <span class="custom-select-value text-primary">Select Conditions</span>
+                      <i class="fas fa-chevron-down custom-select-arrow"></i>
+                    </div>
+                    <div class="custom-select-dropdown hidden">
+                      <div class="custom-select-option text-primary" data-value="optimal">Optimal</div>
+                      <div class="custom-select-option text-primary" data-value="good">Good</div>
+                      <div class="custom-select-option text-primary" data-value="average">Average</div>
+                      <div class="custom-select-option text-primary" data-value="poor">Poor</div>
+                    </div>
+                  </div>
+                </div>
+                <button type="button"
+                  class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 font-semibold"
+                  onclick="calculateYield()">
+                  Calculate Yield
+                </button>
+              </form>
+            </div>
+
+            <!-- Prediction Results -->
+            <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+              <h3 class="text-lg font-semibold text-primary mb-4">Yield Prediction</h3>
+              <div id="yield-results" class="text-center text-secondary py-8">
+                <i class="fas fa-calculator text-4xl mb-4"></i>
+                <p>Enter your farm details to get yield prediction</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Yield Analysis -->
+        <div class="content-section">
+          <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+            <h3 class="text-lg font-semibold text-primary mb-4">Yield Analysis</h3>
+
+            <!-- Analysis Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+              <!-- CARD ONE -->
+              <div class="text-center p-4 bg-green-51 rounded-lg ">
+                <i class="fas fa-arrow-up text-green-600 text-2xl mb-2"></i>
+                <p class="text-sm text-secondary">Expected Increase</p>
+                <p class="text-2xl font-bold text-green-600">15 %</p>
+                <p class="text-xs text-secondary">vs. previous season</p>
+              </div>
+
+              
+              <!-- CARD THREE -->
+              <div class="text-center p-4 bg-purple-51 rounded-lg">
+                <i class="fas fa-coins text-purple-600 text-2xl mb-2"></i>
+                <p class="text-sm text-secondary">Revenue Potential</p>
+                <p class="text-2xl font-bold text-purple-600">KES 1,190,000</p>
+                <p class="text-xs text-secondary">estimated total</p>
+              </div>
+
+              <!-- CARD TWO -->
+              <div class="text-center p-4 bg-blue-51 rounded-lg">
+                <i class="fas fa-weight-hanging text-blue-600 text-2xl mb-2"></i>
+                <p class="text-sm text-secondary">Avg. Head Weight</p>
+                <p class="text-2xl font-bold text-blue-600">1.2 kg</p>
+                <p class="text-xs text-secondary">per cabbage head</p>
+              </div>
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =============================================== -->
+      <!-- YIELD PREDICTION PAGE END -->
+      <!-- =============================================== -->
+
+      <!-- =============================================== -->
+      <!-- FARM RECORDS PAGE START -->
+      <!-- =============================================== -->
+
+      <div id="farm-records-page" class="page-content page-fade hidden">
+        <div class="content-section">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:-mt-16 mt-4">
+            <!-- Quick Stats -->
+            <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+              <h3 class="text-lg font-semibold text-primary mb-4">This Month</h3>
+              <div class="space-y-3">
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-secondary">Total Expenses</span>
+                  <span class="font-semibold text-red-600">KES 175,000</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-secondary">Total Sales</span>
+                  <span class="font-semibold text-green-600">KES 399,000</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-secondary">Net Profit</span>
+                  <span class="font-semibold text-blue-600">KES 224,000</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+              <h3 class="text-lg font-semibold text-primary mb-4">Activities</h3>
+              <div class="space-y-3">
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-secondary">Planted</span>
+                  <span class="font-semibold text-primary">2.5 hectares</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-secondary">Harvested</span>
+                  <span class="font-semibold text-primary">1.2 hectares</span>
+                </div>
+                <div class="flex justify-between items-center">
+                  <span class="text-sm text-secondary">Treatments</span>
+                  <span class="font-semibold text-primary">8 applications</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+              <h3 class="text-lg font-semibold text-primary mb-4">Add Record</h3>
+              <div class="space-y-2">
+                <button class="w-full bg-green-600 text-white py-2 rounded-lg hover:bg-green-700 text-sm">
+                  <i class="fas fa-plus mr-2"></i>Add Expense
+                </button>
+                <button class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 text-sm">
+                  <i class="fas fa-plus mr-2"></i>Add Sale
+                </button>
+                <button class="w-full bg-purple-600 text-white py-2 rounded-lg hover:bg-purple-700 text-sm">
+                  <i class="fas fa-plus mr-2"></i>Add Activity
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Records Table -->
+        <div class="content-section">
+          <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+            <div class="flex justify-between items-center mb-4">
+              <h3 class="text-lg font-semibold text-primary">Recent Records</h3>
+              <div class="flex space-x-2">
+                <button class="px-4 py-2 bg-secondary text-primary rounded-lg hover:bg-gray-300 text-sm">
+                  <i class="fas fa-filter mr-2"></i>Filter
+                </button>
+                <button class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 text-sm">
+                  <i class="fas fa-download mr-2"></i>Export
+                </button>
+              </div>
+            </div>
+            <div class="overflow-x-auto hide-scrollbar">
+              <table class="w-full text-sm">
+                <thead class="bg-secondary">
+                  <tr>
+                    <th class="px-4 py-3 text-left text-primary">Date</th>
+                    <th class="px-4 py-3 text-left text-primary">Type</th>
+                    <th class="px-4 py-3 text-left text-primary">Description</th>
+                    <th class="px-4 py-3 text-left text-primary">Amount</th>
+                    <th class="px-4 py-3 text-left text-primary">Category</th>
+                    <th class="px-4 py-3 text-left text-primary">Actions</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-gray-200">
+                  <tr>
+                    <td class="px-4 py-3 text-secondary">2024-01-15</td>
+                    <td class="px-4 py-3"><span
+                        class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-xs">Expense</span></td>
+                    <td class="px-4 py-3 text-secondary">Fertilizer Purchase</td>
+                    <td class="px-4 py-3 text-secondary">KES 35,000</td>
+                    <td class="px-4 py-3 text-secondary">Fertilizer</td>
+                    <td class="px-4 py-3">
+                      <button class="text-blue-600 hover:text-blue-800 mr-2"><i class="fas fa-edit"></i></button>
+                      <button class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-4 py-3 text-secondary">2024-01-14</td>
+                    <td class="px-4 py-3"><span
+                        class="bg-green-100 text-green-800 px-2 py-1 rounded-full text-xs">Sale</span></td>
+                    <td class="px-4 py-3 text-secondary">Cabbage Harvest Sale</td>
+                    <td class="px-4 py-3 text-secondary">KES 119,000</td>
+                    <td class="px-4 py-3 text-secondary">Sales</td>
+                    <td class="px-4 py-3">
+                      <button class="text-blue-600 hover:text-blue-800 mr-2"><i class="fas fa-edit"></i></button>
+                      <button class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="px-4 py-3 text-secondary">2024-01-13</td>
+                    <td class="px-4 py-3"><span
+                        class="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">Activity</span></td>
+                    <td class="px-4 py-3 text-secondary">Pest Control Spraying</td>
+                    <td class="px-4 py-3 text-secondary">-</td>
+                    <td class="px-4 py-3 text-secondary">Treatment</td>
+                    <td class="px-4 py-3">
+                      <button class="text-blue-600 hover:text-blue-800 mr-2"><i class="fas fa-edit"></i></button>
+                      <button class="text-red-600 hover:text-red-800"><i class="fas fa-trash"></i></button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- Financial Summary Chart -->
+        <div class="content-section">
+          <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+            <h3 class="text-lg font-semibold text-primary mb-4">Financial Summary</h3>
+            <div class="chart-container" style="height: 300px;">
+              <canvas id="financial-chart"></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =============================================== -->
+      <!-- FARM RECORDS PAGE END -->
+      <!-- =============================================== -->
+
+      <!-- =============================================== -->
+      <!-- AI CHAT SUPPORT PAGE START -->
+      <!-- =============================================== -->
+
+      <div id="ai-chat-page" class="page-content page-fade hidden">
+        <div class="content-section">
+          <div class="card-bg rounded-xl shadow-sm border border-primary lg:-mt-16 mt-5"
+            style="height: 600px; display: flex; flex-direction: column;">
+            <!-- Chat Header -->
+            <div class="p-4 border-b border-primary">
+              <div class="flex items-center">
+                <div class="w-10 h-10 bg-green-600 rounded-full flex items-center justify-center mr-3 ">
+                  <i class="fas fa-robot text-white"></i>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-primary">Shamba AI Expert</h3>
+                  <p class="text-sm text-green-600">Online - Ready to help with your crops</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Chat Messages -->
+            <div id="chat-messages" class="flex-1 p-4 overflow-y-auto scrollbar-hide">
+              <div class="chat-bubble mb-4">
+                <div class="flex items-start">
+                  <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3 mt-1 boty">
+                    <i class="fas fa-robot botx text-white text-xs"></i>
+                  </div>
+                  <div class="bg-secondary rounded-lg p-0 max-w-xs">
+                    <p class="text-sm text-primary">Hello! I'm your Shamba AI assistant. I can help you with cabbage and
+                      kale farming questions. What would you like to know?</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick Questions -->
+            <div class="p-4 border-t border-primary">
+              <p class="text-sm text-secondary mb-2">Quick questions:</p>
+              <div class="flex flex-wrap gap-2 mb-3">
+                <button class="bg-green-100 text-green-800 px-3 py-1 rounded-full text-xs hover:bg-green-200"
+                  onclick="sendQuickMessage('Why are my cabbage leaves turning yellow?')">
+                  Yellowing leaves?
+                </button>
+                <button class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-xs hover:bg-blue-200"
+                  onclick="sendQuickMessage('When should I harvest my kale?')">
+                  Harvest timing?
+                </button>
+                <button class="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-xs hover:bg-purple-200"
+                  onclick="sendQuickMessage('How to prevent black rot?')">
+                  Disease prevention?
+                </button>
+              </div>
+
+              <!-- Chat Input - Fixed Responsive Layout -->
+              <div class="chat-input-container">
+                <input type="text" id="chat-input" placeholder="Ask me anything about cabbage and kale farming..."
+                  class="p-3 border border-primary rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-primary text-primary">
+                <button id="voice-btn" class="bg-secondary text-secondary rounded-lg hover:bg-gray-300">
+                  <i class="fas fa-microphone"></i>
+                </button>
+                <button id="send-btn" class="bg-green-600 text-white rounded-lg hover:bg-green-700">
+                  <i class="fas fa-paper-plane"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- =============================================== -->
+      <!-- AI CHAT SUPPORT PAGE END -->
+      <!-- =============================================== -->
+
+    </main>
+  </div>
+
+  <!-- Overlay for mobile -->
+  <div id="overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden lg:hidden"></div>
+
+  <script>
+    // ===============================================
+    // THEME MANAGEMENT SECTION START
+    // ===============================================
+
+    const themeToggle = document.getElementById('theme-toggle');
+    const desktopThemeToggle = document.getElementById('desktop-theme-toggle');
+    const body = document.body;
+
+    function toggleTheme() {
+      const currentTheme = body.getAttribute('data-theme');
+      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+
+      body.setAttribute('data-theme', newTheme);
+      themeToggle.classList.toggle('active');
+      desktopThemeToggle.classList.toggle('active');
+
+      localStorage.setItem('theme', newTheme);
+    }
+
+    // Load saved theme
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    body.setAttribute('data-theme', savedTheme);
+    if (savedTheme === 'dark') {
+      themeToggle.classList.add('active');
+      desktopThemeToggle.classList.add('active');
+    }
+
+    themeToggle.addEventListener('click', toggleTheme);
+    desktopThemeToggle.addEventListener('click', toggleTheme);
+
+    // ===============================================
+    // THEME MANAGEMENT SECTION END
+    // ===============================================
+
+    // ===============================================
+    // NAVIGATION AND PAGE MANAGEMENT SECTION START
+    // ===============================================
+
+    const navItems = document.querySelectorAll('.nav-item');
+    const pageContents = document.querySelectorAll('.page-content');
+    const pageTitle = document.getElementById('page-title');
+    const pageSubtitle = document.getElementById('page-subtitle');
+    const mobilePageTitle = document.getElementById('mobile-page-title');
+    const mobilePageSubtitle = document.getElementById('mobile-page-subtitle');
+    const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('overlay');
+
+    // Page titles and subtitles
+    const pageInfo = {
+      'dashboard': {
+        title: 'Dashboard',
+        subtitle: 'Welcome back to your smart farming assistant'
+      },
+      'disease-detection': {
+        title: 'Pest Detection',
+        subtitle: 'AI-powered plant health analysis'
+      },
+      'weather-advice': {
+        title: 'Weather Advice',
+        subtitle: 'Smart weather-based farming recommendations'
+      },
+      'growth-tracking': {
+        title: 'Growth Tracking',
+        subtitle: 'Monitor your crop development stages'
+      },
+      'market-prices': {
+        title: 'Market Prices',
+        subtitle: 'Real-time market data for your crops'
+      },
+      'yield-prediction': {
+        title: 'Yield Prediction',
+        subtitle: 'AI-powered harvest forecasting'
+      },
+      'farm-records': {
+        title: 'Farm Records',
+        subtitle: 'Track expenses, sales, and activities'
+      },
+      'ai-chat': {
+        title: 'AI Chat Support',
+        subtitle: 'Get expert advice for your farming questions'
+      }
+    };
+
+    // Mobile menu toggle
+    mobileMenuBtn.addEventListener('click', () => {
+      sidebar.classList.toggle('-translate-x-full');
+      overlay.classList.toggle('hidden');
+    });
+
+    overlay.addEventListener('click', () => {
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+    });
+
+    // Navigation handler with local storage
+    navItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        e.preventDefault();
+        const targetPage = item.dataset.page;
+        navigateToPage(targetPage);
+      });
+    });
+
+    function navigateToPage(targetPage) {
+      // Update active nav item
+      navItems.forEach(nav => nav.classList.remove('active'));
+      const activeNavItem = document.querySelector(`[data-page="${targetPage}"]`);
+      if (activeNavItem) {
+        activeNavItem.classList.add('active');
+      }
+
+      // Hide all pages
+      pageContents.forEach(page => {
+        page.classList.add('hidden');
+        page.classList.remove('active');
+      });
+
+      // Show target page
+      const targetPageElement = document.getElementById(targetPage + '-page');
+      if (targetPageElement) {
+        targetPageElement.classList.remove('hidden');
+        setTimeout(() => {
+          targetPageElement.classList.add('active');
+        }, 50);
+      }
+
+      // Update page title and subtitle
+      if (pageInfo[targetPage]) {
+        if (pageTitle) {
+          pageTitle.textContent = pageInfo[targetPage].title;
+          pageSubtitle.textContent = pageInfo[targetPage].subtitle;
+        }
+        if (mobilePageTitle) {
+          mobilePageTitle.textContent = pageInfo[targetPage].title;
+          mobilePageSubtitle.textContent = pageInfo[targetPage].subtitle;
+        }
+      }
+
+      // Close mobile menu
+      sidebar.classList.add('-translate-x-full');
+      overlay.classList.add('hidden');
+
+      // Save current page to localStorage
+      localStorage.setItem('currentPage', targetPage);
+
+      // Initialize page-specific functionality
+      initializePage(targetPage);
+    }
+
+    // Load saved page on refresh
+    function loadSavedPage() {
+      const savedPage = localStorage.getItem('currentPage') || 'dashboard';
+      navigateToPage(savedPage);
+    }
+
+    // ===============================================
+    // NAVIGATION AND PAGE MANAGEMENT SECTION END
+    // ===============================================
+
+    // ===============================================
+    // PAGE INITIALIZATION SECTION START
+    // ===============================================
+
+    function initializePage(page) {
+      switch (page) {
+        case 'growth-tracking':
+          initializeGrowthChart();
+          break;
+        case 'market-prices':
+          initializePriceChart();
+          break;
+        case 'farm-records':
+          initializeFinancialChart();
+          break;
+        case 'yield-prediction':
+          initializeCustomSelects();
+          break;
+      }
+    }
+
+    // ===============================================
+    // PAGE INITIALIZATION SECTION END
+    // ===============================================
+
+    // ===============================================
+    // DISEASE DETECTION FUNCTIONALITY SECTION START
+    // ===============================================
+
+    const fileUploadArea = document.getElementById('file-upload-area');
+    const photoUpload = document.getElementById('photo-upload');
+    const photoPreview = document.getElementById('photo-preview');
+    const previewImage = document.getElementById('preview-image');
+    const analyzeBtn = document.getElementById('analyze-btn');
+    const analysisResults = document.getElementById('analysis-results');
+
+    if (fileUploadArea) {
+      // File upload handlers
+      fileUploadArea.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        fileUploadArea.classList.add('dragover');
+      });
+
+      fileUploadArea.addEventListener('dragleave', () => {
+        fileUploadArea.classList.remove('dragover');
+      });
+
+      fileUploadArea.addEventListener('drop', (e) => {
+        e.preventDefault();
+        fileUploadArea.classList.remove('dragover');
+        const files = e.dataTransfer.files;
+        if (files.length > 0) {
+          handleFileUpload(files[0]);
+        }
+      });
+
+      photoUpload.addEventListener('change', (e) => {
+        if (e.target.files.length > 0) {
+          handleFileUpload(e.target.files[0]);
+        }
+      });
+
+      function handleFileUpload(file) {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          previewImage.src = e.target.result;
+          photoPreview.classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+      }
+
+      if (analyzeBtn) {
+        analyzeBtn.addEventListener('click', () => {
+          // Simulate AI analysis
+          analysisResults.innerHTML = `
+            <div class="text-left">
+                <div class="mb-4">
+                    <div class="flex items-center mb-2">
+                        <div class="w-3 h-3 bg-green-500 rounded-full mr-2"></div>
+                        <span class="font-semibold text-green-800">Plant Health: Good</span>
+                    </div>
+                    <p class="text-sm text-gray-600 mb-4">Your cabbage plant appears healthy with no signs of disease or pest damage.</p>
+                </div>
+                <div class="bg-green-50 p-4 rounded-lg">
+                    <h4 class="font-semibold text-green-800 mb-2">Recommendations:</h4>
+                    <ul class="text-sm text-green-700 space-y-1">
+                        <li>• Continue current watering schedule</li>
+                        <li>• Monitor for pest activity</li>
+                        <li>• Apply fertilizer in 1-2 weeks</li>
+                    </ul>
+                </div>
+            </div>
+          `;
+        });
+      }
+    }
+
+    // ===============================================
+    // DISEASE DETECTION FUNCTIONALITY SECTION END
+    // ===============================================
+
+    // ===============================================
+    // YIELD PREDICTION FUNCTIONALITY SECTION START
+    // ===============================================
+
+    function initializeCustomSelects() {
+      const customSelects = document.querySelectorAll('.custom-select');
+
+      customSelects.forEach(select => {
+        const input = select.querySelector('.custom-select-input');
+        const dropdown = select.querySelector('.custom-select-dropdown');
+        const valueSpan = select.querySelector('.custom-select-value');
+        const options = select.querySelectorAll('.custom-select-option');
+
+        input.addEventListener('click', (e) => {
+          e.stopPropagation();
+          // Close other dropdowns
+          customSelects.forEach(otherSelect => {
+            if (otherSelect !== select) {
+              otherSelect.classList.remove('open');
+              otherSelect.querySelector('.custom-select-dropdown').classList.add('hidden');
+            }
+          });
+
+          // Toggle current dropdown
+          select.classList.toggle('open');
+          dropdown.classList.toggle('hidden');
+        });
+
+        options.forEach(option => {
+          option.addEventListener('click', () => {
+            const value = option.getAttribute('data-value');
+            const text = option.textContent;
+
+            valueSpan.textContent = text;
+            valueSpan.setAttribute('data-value', value);
+
+            select.classList.remove('open');
+            dropdown.classList.add('hidden');
+          });
+        });
+      });
+
+      // Close dropdowns when clicking outside
+      document.addEventListener('click', () => {
+        customSelects.forEach(select => {
+          select.classList.remove('open');
+          select.querySelector('.custom-select-dropdown').classList.add('hidden');
+        });
+      });
+    }
+
+    function calculateYield() {
+      const results = document.getElementById('yield-results');
+      if (results) {
+        results.innerHTML = `
+          <div class="text-left">
+              <div class="text-center mb-6">
+                  <div class="text-4xl font-bold text-green-600 mb-2">2.3 Tons</div>
+                  <p class="text-gray-600">Predicted Total Yield</p>
+              </div>
+              <div class="space-y-4">
+                  <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span class="text-sm text-gray-600">Yield per hectare</span>
+                      <span class="font-semibold">0.92 tons</span>
+                  </div>
+                  <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span class="text-sm text-gray-600">Average head weight</span>
+                      <span class="font-semibold">1.2  kg</span>
+                  </div>
+                  <div class="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
+                      <span class="text-sm text-gray-600">Total heads expected</span>
+                      <span class="font-semibold">1,917 heads</span>
+                  </div>
+                  <div class="flex justify-between items-center p-3 bg-green-50 rounded-lg">
+                      <span class="text-sm text-green-700">Estimated revenue</span>
+                      <span class="font-semibold text-green-600">KES 805,000</span>
+                  </div>
+              </div>
+          </div>
+        `;
+      }
+    }
+
+    // ===============================================
+    // YIELD PREDICTION FUNCTIONALITY SECTION END
+    // ===============================================
+
+    // ===============================================
+    // AI CHAT FUNCTIONALITY SECTION START
+    // ===============================================
+
+    const chatMessages = document.getElementById('chat-messages');
+    const chatInput = document.getElementById('chat-input');
+    const sendBtn = document.getElementById('send-btn');
+    const voiceBtn = document.getElementById('voice-btn');
+
+    function addMessage(message, isUser = false) {
+      if (!chatMessages) return;
+
+      const messageDiv = document.createElement('div');
+      messageDiv.className = 'chat-bubble mb-4';
+
+      if (isUser) {
+        messageDiv.innerHTML = `
+          <div class="flex items-start justify-end">
+              <div class="bg-green-600 text-white rounded-lg p-3 max-w-xs">
+                  <p class="text-sm">${message}</p>
+              </div>
+              <div class="w-8 h-8 bg-gray-300 rounded-full flex items-center justify-center ml-3 mt-1">
+                  <i class="fas fa-user text-gray-600 text-xs"></i>
+              </div>
+          </div>
+        `;
+      } else {
+        messageDiv.innerHTML = `
+          <div class="flex items-start">
+              <div class="w-8 h-8 bg-green-600 rounded-full flex items-center justify-center mr-3 mt-1 boty">
+                  <i class="fas fa-robot botx text-white text-xs"></i>
+              </div>
+              <div class="bg-secondary rounded-lg p-0 max-w-xs">
+                  <p class="text-sm text-primary">${message}</p>
+              </div>
+          </div>
+        `;
+      }
+
+      chatMessages.appendChild(messageDiv);
+      chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function sendMessage() {
+      if (!chatInput) return;
+
+      const message = chatInput.value.trim();
+      if (message) {
+        addMessage(message, true);
+        chatInput.value = '';
+
+        // Simulate AI response
+        setTimeout(() => {
+          const responses = [
+            "Yellowing leaves in cabbage can indicate nitrogen deficiency. Try applying a nitrogen-rich fertilizer and ensure proper drainage.",
+            "For kale harvest, pick outer leaves when they're 6-8 inches long. This allows the center to continue growing.",
+            "To prevent black rot, ensure good air circulation, avoid overhead watering, and rotate crops annually.",
+            "Based on your description, I recommend checking soil pH and ensuring adequate calcium levels for your brassica crops."
+          ];
+          const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+          addMessage(randomResponse);
+        }, 1000);
+      }
+    }
+
+    function sendQuickMessage(message) {
+      addMessage(message, true);
+      setTimeout(() => {
+        let response = "";
+        if (message.includes('yellow')) {
+          response = "Yellowing leaves in cabbage can indicate nitrogen deficiency, overwatering, or natural aging. Check soil moisture and consider applying a balanced fertilizer. If only lower leaves are yellow, this is normal aging.";
+        } else if (message.includes('harvest')) {
+          response = "Harvest kale when leaves are 6-8 inches long. For cabbage, harvest when heads are firm and solid. Morning harvest is best for quality and shelf life.";
+        } else if (message.includes('black rot')) {
+          response = "To prevent black rot: 1) Rotate crops annually 2) Ensure good air circulation 3) Avoid overhead watering 4) Remove infected plant debris 5) Use resistant varieties when possible.";
+        }
+        addMessage(response);
+      }, 1000);
+    }
+
+    if (sendBtn) {
+      sendBtn.addEventListener('click', sendMessage);
+    }
+
+    if (chatInput) {
+      chatInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          sendMessage();
+        }
+      });
+    }
+
+    // Voice functionality (basic implementation)
+    if (voiceBtn) {
+      voiceBtn.addEventListener('click', () => {
+        if ('webkitSpeechRecognition' in window) {
+          const recognition = new webkitSpeechRecognition();
+          recognition.continuous = false;
+          recognition.interimResults = false;
+          recognition.lang = 'en-US';
+
+          recognition.start();
+          voiceBtn.innerHTML = '<i class="fas fa-microphone text-red-600"></i>';
+
+          recognition.onresult = (event) => {
+            const transcript = event.results[0][0].transcript;
+            if (chatInput) {
+              chatInput.value = transcript;
+            }
+            voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+          };
+
+          recognition.onerror = () => {
+            voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
+          };
+        } else {
+          alert('Speech recognition not supported in this browser');
+        }
+      });
+    }
+
+    // ===============================================
+    // AI CHAT FUNCTIONALITY SECTION END
+    // ===============================================
+
+    // ===============================================
+    // CHART INITIALIZATION SECTION START
+    // ===============================================
+
+    function initializeGrowthChart() {
+      const ctx = document.getElementById('growth-chart');
+      if (ctx && !ctx.chart) {
+        ctx.chart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5', 'Week 6', 'Week 7', 'Week 8'],
+            datasets: [{
+              label: 'Cabbage Growth',
+              data: [5, 15, 25, 40, 60, 75, 85, 95],
+              borderColor: '#10b981',
+              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+              fill: true
+            }, {
+              label: 'Kale Growth',
+              data: [8, 20, 35, 50, 65, 80, 90, 100],
+              borderColor: '#3b82f6',
+              backgroundColor: 'rgba(59, 130, 246, 0.1)',
+              fill: true
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                max: 100,
+                title: {
+                  display: true,
+                  text: 'Growth Progress (%)'
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    function initializePriceChart() {
+      const ctx = document.getElementById('price-chart');
+      if (ctx && !ctx.chart) {
+        ctx.chart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: ['Day 1', 'Day 5', 'Day 10', 'Day 15', 'Day 20', 'Day 25', 'Day 30'],
+            datasets: [{
+              label: 'Cabbage Price (KES)',
+              data: [308, 329, 350, 343, 364, 357, 350],
+              borderColor: '#10b981',
+              backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            }, {
+              label: 'Kale Price (KES)',
+              data: [588, 609, 630, 657, 672, 665, 630],
+              borderColor: '#3b82f6',
+              backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: false,
+                title: {
+                  display: true,
+                  text: 'Price (KES/kg)'
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    function initializeFinancialChart() {
+      const ctx = document.getElementById('financial-chart');
+      if (ctx && !ctx.chart) {
+        ctx.chart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+            datasets: [{
+              label: 'Expenses (KES)',
+              data: [168000, 154000, 182000, 175000, 196000, 175000],
+              backgroundColor: 'rgba(239, 68, 68, 0.8)',
+            }, {
+              label: 'Revenue (KES)',
+              data: [280000, 252000, 308000, 399000, 448000, 399000],
+              backgroundColor: 'rgba(16, 185, 129, 0.8)',
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y: {
+                beginAtZero: true,
+                title: {
+                  display: true,
+                  text: 'Amount (KES)'
+                }
+              }
+            }
+          }
+        });
+      }
+    }
+
+    // ===============================================
+    // CHART INITIALIZATION SECTION END
+    // ===============================================
+
+    // ===============================================
+    // APPLICATION INITIALIZATION SECTION START
+    // ===============================================
+
+    // Initialize dashboard on load
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSavedPage();
+    });
+
+    // ===============================================
+    // APPLICATION INITIALIZATION SECTION END
+    // ===============================================
+  </script>
+</body>
+
+</html>

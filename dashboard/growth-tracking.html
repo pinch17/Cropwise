@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CropWise Growth Tracking - Smart Farming Assistant</title>
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+  <!-- External Libraries -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <style>
+    /* Additional styles to ensure theme compatibility */
+    .growth-stage-green {
+      background-color: rgba(16, 185, 129, 0.1);
+      border-color: #10b981;
+    }
+
+    .growth-stage-blue {
+      background-color: rgba(59, 130, 246, 0.1);
+      border-color: #3b82f6;
+    }
+
+    .growth-stage-purple {
+      background-color: rgba(139, 92, 246, 0.1);
+      border-color: #8b5cf6;
+    }
+
+    .growth-stage-yellow {
+      background-color: rgba(245, 158, 11, 0.1);
+      border-color: #f59e0b;
+    }
+
+    .growth-stage-red {
+      background-color: rgba(239, 68, 68, 0.1);
+      border-color: #ef4444;
+    }
+
+    .growth-icon-green {
+      background-color: rgba(16, 185, 129, 0.2);
+      color: #10b981;
+    }
+
+    .growth-icon-blue {
+      background-color: rgba(59, 130, 246, 0.2);
+      color: #3b82f6;
+    }
+
+    .growth-icon-purple {
+      background-color: rgba(139, 92, 246, 0.2);
+      color: #8b5cf6;
+    }
+
+    .growth-icon-yellow {
+      background-color: rgba(245, 158, 11, 0.2);
+      color: #f59e0b;
+    }
+
+    .growth-icon-red {
+      background-color: rgba(239, 68, 68, 0.2);
+      color: #ef4444;
+    }
+
+    [data-theme="dark"] .growth-stage-green {
+      background-color: rgba(16, 185, 129, 0.2);
+    }
+
+    [data-theme="dark"] .growth-stage-blue {
+      background-color: rgba(59, 130, 246, 0.2);
+    }
+
+    [data-theme="dark"] .growth-stage-purple {
+      background-color: rgba(139, 92, 246, 0.2);
+    }
+
+    [data-theme="dark"] .growth-stage-yellow {
+      background-color: rgba(245, 158, 11, 0.2);
+    }
+
+    [data-theme="dark"] .growth-stage-red {
+      background-color: rgba(239, 68, 68, 0.2);
+    }
+
+    .form-input {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-primary);
+    }
+
+    .form-input:focus {
+      border-color: #10b981;
+      box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+    }
+
+    .btn-primary {
+      background-color: #10b981;
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background-color: #059669;
+    }
+
+    .notification {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      padding: 12px 20px;
+      border-radius: 8px;
+      color: white;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .notification-success {
+      background-color: #10b981;
+    }
+
+    .notification-error {
+      background-color: #ef4444;
+    }
+
+    .info-box {
+      background-color: var(--bg-secondary);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 8px;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- Include sidebar and header from index.html -->
+  <div id="navigation-container"></div>
+
+  <!-- Main Content -->
+  <div class="lg:ml-64 main-content">
+    <!-- Include Mobile Header -->
+    <div id="mobile-header-container"></div>
+    <!-- Include Desktop Header -->
+    <div id="desktop-header-container"></div>
+
+    <!-- Page Content -->
+    <main class="p-6 mobile-header-spacing lg:pt-6">
+      <div class="content-section">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Growth Calendar -->
+          <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+            <h3 class="text-lg font-semibold text-primary mb-4">Growth Calendar</h3>
+            <div id="growth-calendar" class="space-y-4">
+              <!-- Calendar items will be dynamically loaded here -->
+            </div>
+          </div>
+
+          <!-- Growth Progress -->
+          <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+            <h3 class="text-lg font-semibold text-primary mb-4">Growth Progress</h3>
+            <div id="growth-progress" class="space-y-6">
+              <!-- Progress items will be dynamically loaded here -->
+            </div>
+
+            <div id="next-action" class="mt-6 p-4 bg-secondary rounded-lg">
+              <!-- Next action will be dynamically loaded here -->
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Add Growth Entry Form -->
+      <div class="content-section mt-6">
+        <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+          <h3 class="text-lg font-semibold text-primary mb-4">Add Growth Entry</h3>
+          <form id="growth-entry-form" class="space-y-4">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label for="crop-type" class="block text-sm font-medium text-primary mb-1">Crop Type</label>
+                <select id="crop-type" class="form-input w-full p-2 rounded-lg" required>
+                  <option value="">Select a crop</option>
+                  <option value="cabbage">Cabbage</option>
+                  <option value="kale">Kale</option>
+                  <option value="tomato">Tomato</option>
+                  <option value="lettuce">Lettuce</option>
+                  <option value="carrot">Carrot</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="growth-stage" class="block text-sm font-medium text-primary mb-1">Growth Stage</label>
+                <select id="growth-stage" class="form-input w-full p-2 rounded-lg" required>
+                  <option value="">Select a stage</option>
+                  <option value="seedling">Seedling</option>
+                  <option value="vegetative">Vegetative</option>
+                  <option value="flowering">Flowering</option>
+                  <option value="fruiting">Fruiting</option>
+                  <option value="harvest">Harvest</option>
+                </select>
+              </div>
+
+              <div>
+                <label for="plant-date" class="block text-sm font-medium text-primary mb-1">Planting Date</label>
+                <input type="date" id="plant-date" class="form-input w-full p-2 rounded-lg" required>
+              </div>
+
+              <div>
+                <label for="current-height" class="block text-sm font-medium text-primary mb-1">Current Height
+                  (cm)</label>
+                <input type="number" id="current-height" min="0" step="0.1" class="form-input w-full p-2 rounded-lg"
+                  required>
+              </div>
+
+              <div>
+                <label for="health-status" class="block text-sm font-medium text-primary mb-1">Health Status</label>
+                <select id="health-status" class="form-input w-full p-2 rounded-lg" required>
+                  <option value="">Select status</option>
+                  <option value="excellent">Excellent</option>
+                  <option value="good">Good</option>
+                  <option value="fair">Fair</option>
+                  <option value="poor">Poor</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label for="notes" class="block text-sm font-medium text-primary mb-1">Notes</label>
+              <textarea id="notes" rows="3" class="form-input w-full p-2 rounded-lg"
+                placeholder="Add any additional notes about this crop..."></textarea>
+            </div>
+
+            <div id="harvest-info" class="info-box hidden">
+              <p class="text-sm text-secondary">
+                <i class="fas fa-info-circle mr-2"></i>
+                <span id="harvest-text"></span>
+              </p>
+            </div>
+
+            <div class="flex justify-end">
+              <button type="submit" class="btn-primary px-6 py-2 rounded-lg transition-colors">
+                <i class="fas fa-save mr-2"></i>Save Growth Entry
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Growth Chart -->
+      <div class="content-section">
+        <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+          <h3 class="text-lg font-semibold text-primary mb-4">Growth Chart</h3>
+          <div class="chart-container">
+            <canvas id="growth-chart"></canvas>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Firebase Configuration -->
+  <script src="js/firebase-config.js"></script>
+
+  <!-- Common JavaScript -->
+  <script src="js/common.js"></script>
+
+  <!-- Page-specific JavaScript -->
+  <script src="js/growth-tracking.js"></script>
+
+  <script>
+    // Load components
+    document.addEventListener('DOMContentLoaded', function () {
+      // Load navigation
+      fetch('navigation.html')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('navigation-container').innerHTML = html;
+        });
+
+      // Load mobile header
+      fetch('mobile-header.html')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('mobile-header-container').innerHTML = html;
+        });
+
+      // Load desktop header
+      fetch('desktop-header.html')
+        .then(response => response.text())
+        .then(html => {
+          document.getElementById('desktop-header-container').innerHTML = html;
+        });
+    });
+
+    (function () {
+      const savedTheme = localStorage.getItem('theme') || 'dark';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+    })();
+
+
+
+      // Theme toggle functionality
+      function toggleTheme() {
+        const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+        // Apply theme to document
+        document.documentElement.setAttribute("data-theme", newTheme);
+
+        // Update toggle state for both mobile and desktop
+        const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+        const desktopThemeToggle = document.getElementById('desktop-theme-toggle');
+
+        if (mobileThemeToggle) {
+          void mobileThemeToggle.offsetWidth; // Force reflow
+          if (newTheme === "dark") {
+            mobileThemeToggle.classList.add("active");
+          } else {
+            mobileThemeToggle.classList.remove("active");
+          }
+        }
+
+        if (desktopThemeToggle) {
+          void desktopThemeToggle.offsetWidth; // Force reflow
+          if (newTheme === "dark") {
+            desktopThemeToggle.classList.add("active");
+          } else {
+            desktopThemeToggle.classList.remove("active");
+          }
+        }
+
+        // Save to localStorage
+        localStorage.setItem("theme", newTheme);
+
+        // Save to Firebase if user is logged in
+        const userData = getCurrentUserData();
+        if (userData) {
+          const emailKey = userData.email.replace(/\./g, "_");
+          database.ref("users/" + emailKey).update({ theme: newTheme })
+            .then(() => console.log("Theme saved to Firebase:", newTheme))
+            .catch(error => console.error("Error saving theme to Firebase:", error));
+        }
+      }
+
+      // Get current user data
+      function getCurrentUserData() {
+        try {
+          const userData = localStorage.getItem("userData");
+          return userData ? JSON.parse(userData) : null;
+        } catch (e) {
+          return null;
+        }
+      }
+
+      // Load components
+      document.addEventListener('DOMContentLoaded', function () {
+        // Load navigation
+        fetch('navigation.html')
+          .then(response => response.text())
+          .then(html => {
+            document.getElementById('navigation-container').innerHTML = html;
+          });
+
+        // Load mobile header
+        fetch('mobile-header.html')
+          .then(response => response.text())
+          .then(html => {
+            document.getElementById('mobile-header-container').innerHTML = html;
+
+            // Initialize mobile theme toggle after loading
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+            if (mobileThemeToggle) {
+              void mobileThemeToggle.offsetWidth; // Force reflow
+              if (savedTheme === 'dark') {
+                mobileThemeToggle.classList.add('active');
+              } else {
+                mobileThemeToggle.classList.remove('active');
+              }
+
+              mobileThemeToggle.addEventListener('click', function (e) {
+                e.stopPropagation();
+                toggleTheme();
+              });
+            }
+          });
+
+        // Load desktop header
+        fetch('desktop-header.html')
+          .then(response => response.text())
+          .then(html => {
+            document.getElementById('desktop-header-container').innerHTML = html;
+
+            // Initialize desktop theme toggle after loading
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            const desktopThemeToggle = document.getElementById('desktop-theme-toggle');
+            if (desktopThemeToggle) {
+              void desktopThemeToggle.offsetWidth; // Force reflow
+              if (savedTheme === 'dark') {
+                desktopThemeToggle.classList.add('active');
+              } else {
+                desktopThemeToggle.classList.remove('active');
+              }
+
+              desktopThemeToggle.addEventListener('click', function (e) {
+                e.stopPropagation();
+                toggleTheme();
+              });
+            }
+          });
+      });
+  </script>
+</body>
+
+</html>

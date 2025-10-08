@@ -1,0 +1,799 @@
+/* Custom Styles for CropWise */
+
+:root {
+  /* Light theme colors */
+  --bg-primary: linear-gradient(135deg, #065f46 0%, #10b981 50%, #34d399 100%);
+  --bg-secondary: rgba(255, 255, 255, 0.15);
+  --bg-tertiary: rgba(255, 255, 255, 0.2);
+  --text-primary: #ffffff;
+  --text-secondary: #d1fae5;
+  --text-tertiary: #a7f3d0;
+  --border-primary: rgba(255, 255, 255, 0.2);
+  --border-secondary: rgba(255, 255, 255, 0.3);
+  --accent-primary: #10b981;
+  --accent-secondary: #34d399;
+  --shadow-primary: rgba(0, 0, 0, 0.1);
+  --shadow-secondary: rgba(16, 185, 129, 0.25);
+  --particle-color: rgba(255, 255, 255, 0.15);
+  --glassmorphism-bg: rgba(255, 255, 255, 0.15);
+  --glassmorphism-border: rgba(255, 255, 255, 0.2);
+}
+
+[data-theme="dark"] {
+  /* Green theme colors */
+  --bg-primary: linear-gradient(135deg, #0a1f0a 0%, #1a2e1a 50%, #2d4a2d 100%);
+  --bg-secondary: rgba(10, 31, 10, 0.8);
+  --bg-tertiary: rgba(26, 46, 26, 0.6);
+  --text-primary: #f0fdf4;
+  --text-secondary: #bbf7d0;
+  --text-tertiary: #86efac;
+  --border-primary: rgba(134, 239, 172, 0.2);
+  --border-secondary: rgba(187, 247, 208, 0.3);
+  --accent-primary: #10b981;
+  --accent-secondary: #059669;
+  --shadow-primary: rgba(0, 0, 0, 0.3);
+  --shadow-secondary: rgba(16, 185, 129, 0.25);
+  --particle-color: rgba(134, 239, 172, 0.1);
+  --glassmorphism-bg: rgba(10, 31, 10, 0.8);
+  --glassmorphism-border: rgba(134, 239, 172, 0.2);
+}
+
+* {
+  font-family: 'Outfit', sans-serif;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease;
+}
+
+/* Hide all scrollbars completely */
+html {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+body {
+  background: var(--bg-primary);
+  min-height: 120vh;
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  overflow-x: hidden;
+  transition: background 0.5s ease;
+}
+
+body::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
+}
+
+* {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+*::-webkit-scrollbar-track {
+  display: none;
+}
+
+*::-webkit-scrollbar-thumb {
+  display: none;
+}
+
+.glassmorphism {
+  background: var(--glassmorphism-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glassmorphism-border);
+  box-shadow: 0 25px 45px var(--shadow-primary);
+  transition: all 0.3s ease;
+}
+
+.form-transition {
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input-focus {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  background: var(--bg-tertiary) !important;
+  border-color: var(--border-secondary) !important;
+  color: var(--text-primary) !important;
+}
+
+.input-focus::placeholder {
+  color: var(--text-tertiary) !important;
+}
+
+.input-focus:focus {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px var(--shadow-secondary);
+  border-color: var(--accent-primary) !important;
+}
+
+.btn-hover {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  background: var(--accent-primary) !important;
+  box-shadow: 0 4px 15px var(--shadow-secondary);
+}
+
+.btn-hover::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-hover:hover::before {
+  left: 100%;
+}
+
+.btn-hover:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px var(--shadow-primary);
+}
+
+.floating-animation {
+  animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+
+  50% {
+    transform: translateY(-15px);
+  }
+}
+
+.slide-in-left {
+  animation: slideInLeft 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.slide-in-right {
+  animation: slideInRight 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.logo-glow {
+  filter: drop-shadow(0 0 20px var(--accent-secondary));
+}
+
+/* Fixed Success Checkmark Animation */
+.success-checkmark {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  display: block;
+  stroke-width: 2;
+  stroke: var(--accent-primary);
+  stroke-miterlimit: 10;
+  margin: 20px auto;
+  box-shadow: inset 0px 0px 0px var(--accent-primary);
+  animation: fill 0.4s ease-in-out 0.4s forwards, scale 0.3s ease-in-out 0.9s both;
+  opacity: 1;
+  transform: scale(1);
+}
+
+.success-checkmark-circle {
+  stroke-dasharray: 166;
+  stroke-dashoffset: 166;
+  stroke-width: 2;
+  stroke-miterlimit: 10;
+  stroke: var(--accent-primary);
+  fill: none;
+  animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+}
+
+.success-checkmark-check {
+  transform-origin: 50% 50%;
+  stroke-dasharray: 48;
+  stroke-dashoffset: 48;
+  animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards;
+}
+
+@keyframes stroke {
+  100% {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes fill {
+  100% {
+    box-shadow: inset 0px 0px 0px 60px var(--accent-primary);
+  }
+}
+
+@keyframes scale {
+
+  0%,
+  100% {
+    transform: none;
+  }
+
+  50% {
+    transform: scale3d(1.1, 1.1, 1);
+  }
+}
+
+.particles {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  z-index: 0;
+}
+
+.particle {
+  position: absolute;
+  background: var(--particle-color);
+  border-radius: 50%;
+  animation: particle-float 15s infinite linear;
+}
+
+@keyframes particle-float {
+  0% {
+    transform: translateY(100vh) rotate(0deg);
+    opacity: 1;
+  }
+
+  100% {
+    transform: translateY(-100px) rotate(360deg);
+    opacity: 0;
+  }
+}
+
+/* Theme Toggle Button */
+.theme-toggle {
+  position: fixed;
+  top: 2rem;
+  right: 2rem;
+  z-index: 1000;
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--glassmorphism-bg);
+  backdrop-filter: blur(20px);
+  border: 1px solid var(--glassmorphism-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px var(--shadow-primary);
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: 0 12px 35px var(--shadow-secondary);
+}
+
+.theme-toggle i {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  transition: all 0.3s ease;
+}
+
+.theme-toggle-icon {
+  position: relative;
+}
+
+.theme-toggle-icon .fa-sun,
+.theme-toggle-icon .fa-moon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.3s ease;
+}
+
+[data-theme="light"] .theme-toggle-icon .fa-sun {
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(0deg);
+}
+
+[data-theme="light"] .theme-toggle-icon .fa-moon {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(180deg);
+}
+
+[data-theme="dark"] .theme-toggle-icon .fa-sun {
+  opacity: 0;
+  transform: translate(-50%, -50%) rotate(-180deg);
+}
+
+[data-theme="dark"] .theme-toggle-icon .fa-moon {
+  opacity: 1;
+  transform: translate(-50%, -50%) rotate(0deg);
+}
+
+/* Modern Custom Checkbox Styles - FIXED */
+.custom-checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  width: 22px;
+  height: 22px;
+  border: 2px solid var(--border-secondary);
+  border-radius: 6px;
+  background: var(--bg-tertiary);
+  position: relative;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+  margin: 0;
+  outline: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.custom-checkbox:hover {
+  border-color: var(--accent-primary);
+  background: var(--bg-secondary);
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px var(--shadow-secondary);
+}
+
+.custom-checkbox:focus {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+}
+
+/* Animated checkmark */
+.custom-checkbox:checked {
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 12px var(--shadow-secondary);
+  transform: scale(1.05);
+}
+
+.custom-checkbox:checked::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 5px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: translate(-50%, -60%) rotate(45deg);
+  animation: checkmark-appear 0.3s ease-in-out;
+}
+
+@keyframes checkmark-appear {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -60%) rotate(45deg) scale(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translate(-50%, -60%) rotate(45deg) scale(1.2);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -60%) rotate(45deg) scale(1);
+  }
+}
+
+/* Perfect checkbox container alignment */
+.checkbox-container {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  width: 100%;
+  margin: 12px 0;
+}
+
+.checkbox-label {
+  flex: 1;
+  line-height: 1.5;
+  padding-top: 1px;
+  color: var(--text-secondary) !important;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+/* Input field with proper icon alignment */
+.input-group {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-group .input-icon {
+  position: absolute;
+  left: 16px;
+  z-index: 10;
+  color: var(--text-tertiary);
+  pointer-events: none;
+  transition: color 0.3s ease;
+}
+
+.input-group input {
+  padding-left: 48px !important;
+  padding-right: 16px !important;
+}
+
+.input-group .password-toggle {
+  position: absolute;
+  right: 16px;
+  z-index: 10;
+  cursor: pointer;
+  color: var(--text-tertiary);
+  transition: color 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.input-group .password-toggle:hover {
+  color: var(--text-primary);
+}
+
+.input-group input[type="password"],
+.input-group input[type="text"].password-field {
+  padding-right: 48px !important;
+}
+
+/* Improved Custom Select Dropdown - FIXED VISIBILITY */
+.custom-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.custom-select-trigger {
+  width: 100%;
+  padding: 16px 40px 16px 48px;
+  background: var(--bg-tertiary);
+  border: 1px solid var(--border-secondary);
+  border-radius: 12px;
+  color: var(--text-primary);
+  font-size: 16px;
+  cursor: pointer;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  user-select: none;
+}
+
+.custom-select-trigger:hover {
+  background: var(--bg-secondary);
+  border-color: var(--border-primary);
+}
+
+.custom-select-trigger.active {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px var(--shadow-secondary);
+  border-color: var(--accent-primary);
+}
+
+.custom-select-trigger .placeholder {
+  color: var(--text-tertiary);
+}
+
+.custom-select-trigger .selected-text {
+  color: var(--text-primary);
+}
+
+.custom-select-arrow {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+  color: var(--text-tertiary);
+  font-size: 14px;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.custom-select-trigger.active .custom-select-arrow {
+  transform: translateY(-50%) rotate(180deg);
+  color: var(--text-primary);
+}
+
+/* FIXED: Improved visibility for dropdown options */
+.custom-select-dropdown {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--border-secondary);
+  border-radius: 12px;
+  margin-top: 4px;
+  z-index: 100;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 20px 40px var(--shadow-primary);
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+[data-theme="dark"] .custom-select-dropdown {
+  background: rgba(15, 23, 42, 0.95);
+  border: 1px solid var(--border-primary);
+}
+
+.custom-select-dropdown.active {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.custom-select-option {
+  padding: 14px 16px;
+  color: #333; /* Changed from var(--text-primary) to a dark color for visibility */
+  cursor: pointer;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  font-weight: 500;
+  background: transparent;
+}
+
+[data-theme="dark"] .custom-select-option {
+  color: #f0fdf4; /* Changed from var(--text-primary) to a light color for dark mode */
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.custom-select-option:last-child {
+  border-bottom: none;
+}
+
+.custom-select-option:hover {
+  background: var(--accent-primary);
+  color: white;
+  
+}
+
+.custom-select-option.selected {
+  background: var(--accent-primary);
+  color: white;
+  font-weight: 600;
+}
+
+/* Brand section responsive layout with improved mobile centering */
+.brand-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  width: 100%;
+}
+
+/* Mobile-first approach - ensure text is centered */
+.mobile-centered-text {
+  text-align: center;
+  width: 100%;
+}
+
+.mobile-centered-subtitle {
+  text-align: center;
+  margin: 0 auto;
+  display: block;
+}
+
+.mobile-centered-description {
+  text-align: center;
+  margin: 0 auto;
+  max-width: 100%;
+}
+
+@media (min-width: 1024px) {
+  .brand-container {
+    flex-direction: row;
+    align-items: center;
+    text-align: left;
+    justify-content: flex-start;
+  }
+
+  .brand-text {
+    margin-left: 0.6rem;
+  }
+
+  .fa-seedling {
+    margin-bottom: 8px;
+    margin-left: -10px;
+  }
+
+  /* On desktop, align text to left */
+  .mobile-centered-text {
+    text-align: left;
+  }
+
+  .mobile-centered-subtitle {
+    text-align: left;
+  }
+
+  .mobile-centered-description {
+    text-align: left;
+  }
+}
+
+/* Enhanced toggle buttons with smoother transitions */
+.toggle-btn-active {
+  background: var(--accent-primary) !important;
+  box-shadow: 0 4px 15px var(--shadow-secondary);
+  transform: scale(1.02);
+  color: white !important;
+}
+
+.toggle-btn-inactive {
+  background: transparent !important;
+  transform: scale(1);
+  color: var(--text-primary) !important;
+}
+
+/* Text colors for theme switching */
+.text-primary-themed {
+  color: var(--text-primary) !important;
+}
+
+.text-secondary-themed {
+  color: var(--text-secondary) !important;
+}
+
+.text-tertiary-themed {
+  color: var(--text-tertiary) !important;
+}
+
+/* Smooth transitions for all interactive elements */
+button,
+.custom-select-trigger,
+.custom-checkbox,
+input {
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Features list styling */
+.feature-item {
+  color: var(--text-primary);
+  transition: color 0.3s ease;
+}
+
+.feature-item i {
+  color: var(--accent-secondary);
+}
+
+/* Links styling */
+.themed-link {
+  color: var(--text-secondary) !important;
+  transition: color 0.3s ease;
+}
+
+.themed-link:hover {
+  color: var(--text-primary) !important;
+}
+
+/* Enhanced glassmorphism for dark mode */
+[data-theme="dark"] .glassmorphism {
+  background: rgba(15, 23, 42, 0.9);
+  backdrop-filter: blur(25px);
+  border: 1px solid rgba(148, 163, 184, 0.15);
+}
+
+/* Error message styling */
+.error-message {
+  background: rgba(239, 68, 68, 0.1);
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  color: #ef4444;
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 16px;
+  display: none;
+}
+
+.success-message {
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: var(--accent-primary);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 16px;
+  display: none;
+}
+
+/* Mobile responsiveness for theme toggle */
+@media (max-width: 768px) {
+  .theme-toggle {
+    top: 1rem;
+    right: 1rem;
+    width: 50px;
+    height: 50px;
+  }
+
+  .theme-toggle i {
+    font-size: 1.2rem;
+  }
+
+  /* Ensure perfect centering on mobile */
+  .slide-in-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+
+  .brand-section-mobile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+}
+
+/* Additional mobile text styling */
+@media (max-width: 767px) {
+  .mobile-text-center {
+    text-align: center !important;
+    display: block;
+    margin: 0 auto;
+  }
+}
+
+/* Success Animation Fix */
+.success-screen {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

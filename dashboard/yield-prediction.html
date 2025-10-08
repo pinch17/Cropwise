@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CropWise Yield Prediction - Smart Farming Assistant</title>
+
+  <!-- External CSS -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+  <!-- External Libraries -->
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+  <!-- Include sidebar and header from index.html -->
+  <div id="navigation-container"></div>
+
+  <!-- Main Content -->
+  <div class="lg:ml-64 main-content">
+    <!-- Header -->
+
+    <!-- Include Mobile Header -->
+    <div id="mobile-header-container"></div>
+    <!-- Include Desktop Header -->
+    <div id="desktop-header-container"></div>
+    <!-- Page Content -->
+    <main class="p-6 mobile-header-spacing lg:pt-6">
+      <div class="content-section">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <!-- Yield Calculator -->
+          <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+            <h3 class="text-lg font-semibold text-primary mb-4">Yield Calculator</h3>
+            <form class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Crop Type</label>
+                <div class="custom-select" data-field="cropType">
+                  <div class="custom-select-input">
+                    <span class="custom-select-value text-primary">Select Crop Type</span>
+                    <i class="fas fa-chevron-down custom-select-arrow"></i>
+                  </div>
+                  <div class="custom-select-dropdown hidden">
+                    <div class="custom-select-option text-primary" data-value="cabbage">Cabbage</div>
+                    <div class="custom-select-option text-primary" data-value="kale">Kale (Sukuma Wiki)</div>
+                    <div class="custom-select-option text-primary" data-value="both">Both</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Farm Area (hectares)</label>
+                <input type="number" placeholder="e.g., 2.5" id="farm-area"
+                  class="w-full p-3 border border-primary rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-primary text-primary">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Planting Density (plants/hectare)</label>
+                <input type="number" placeholder="e.g., 40000" id="planting-density"
+                  class="w-full p-3 border border-primary rounded-lg focus:ring-2 focus:ring-green-500 focus:border-green-500 bg-primary text-primary">
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Variety</label>
+                <div class="custom-select" data-field="variety">
+                  <div class="custom-select-input">
+                    <span class="custom-select-value text-primary">Select Variety</span>
+                    <i class="fas fa-chevron-down custom-select-arrow"></i>
+                  </div>
+                  <div class="custom-select-dropdown hidden">
+                    <div class="custom-select-option text-primary" data-value="standard">Standard Variety</div>
+                    <div class="custom-select-option text-primary" data-value="hybrid">High-Yield Hybrid</div>
+                    <div class="custom-select-option text-primary" data-value="organic">Organic Variety</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Growing Conditions</label>
+                <div class="custom-select" data-field="conditions">
+                  <div class="custom-select-input">
+                    <span class="custom-select-value text-primary">Select Conditions</span>
+                    <i class="fas fa-chevron-down custom-select-arrow"></i>
+                  </div>
+                  <div class="custom-select-dropdown hidden">
+                    <div class="custom-select-option text-primary" data-value="optimal">Optimal</div>
+                    <div class="custom-select-option text-primary" data-value="good">Good</div>
+                    <div class="custom-select-option text-primary" data-value="average">Average</div>
+                    <div class="custom-select-option text-primary" data-value="poor">Poor</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Soil Type</label>
+                <div class="custom-select" data-field="soilType">
+                  <div class="custom-select-input">
+                    <span class="custom-select-value text-primary">Select Soil Type</span>
+                    <i class="fas fa-chevron-down custom-select-arrow"></i>
+                  </div>
+                  <div class="custom-select-dropdown hidden">
+                    <div class="custom-select-option text-primary" data-value="loamy">Loamy</div>
+                    <div class="custom-select-option text-primary" data-value="sandy">Sandy</div>
+                    <div class="custom-select-option text-primary" data-value="clay">Clay</div>
+                    <div class="custom-select-option text-primary" data-value="silty">Silty</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Irrigation Method</label>
+                <div class="custom-select" data-field="irrigation">
+                  <div class="custom-select-input">
+                    <span class="custom-select-value text-primary">Select Irrigation</span>
+                    <i class="fas fa-chevron-down custom-select-arrow"></i>
+                  </div>
+                  <div class="custom-select-dropdown hidden">
+                    <div class="custom-select-option text-primary" data-value="drip">Drip Irrigation</div>
+                    <div class="custom-select-option text-primary" data-value="sprinkler">Sprinkler</div>
+                    <div class="custom-select-option text-primary" data-value="flood">Flood Irrigation</div>
+                    <div class="custom-select-option text-primary" data-value="rainfed">Rain-fed</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Fertilizer Usage</label>
+                <div class="custom-select" data-field="fertilizer">
+                  <div class="custom-select-input">
+                    <span class="custom-select-value text-primary">Select Fertilizer</span>
+                    <i class="fas fa-chevron-down custom-select-arrow"></i>
+                  </div>
+                  <div class="custom-select-dropdown hidden">
+                    <div class="custom-select-option text-primary" data-value="organic">Organic Only</div>
+                    <div class="custom-select-option text-primary" data-value="mixed">Mixed (Organic + NPK)</div>
+                    <div class="custom-select-option text-primary" data-value="npk">NPK Fertilizer</div>
+                    <div class="custom-select-option text-primary" data-value="none">No Fertilizer</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Pest Management</label>
+                <div class="custom-select" data-field="pestManagement">
+                  <div class="custom-select-input">
+                    <span class="custom-select-value text-primary">Select Method</span>
+                    <i class="fas fa-chevron-down custom-select-arrow"></i>
+                  </div>
+                  <div class="custom-select-dropdown hidden">
+                    <div class="custom-select-option text-primary" data-value="integrated">Integrated Pest Management
+                    </div>
+                    <div class="custom-select-option text-primary" data-value="chemical">Chemical Pesticides</div>
+                    <div class="custom-select-option text-primary" data-value="organic">Organic Methods</div>
+                    <div class="custom-select-option text-primary" data-value="none">No Pest Management</div>
+                  </div>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-primary mb-2">Planting Season</label>
+                <div class="custom-select" data-field="season">
+                  <div class="custom-select-input">
+                    <span class="custom-select-value text-primary">Select Season</span>
+                    <i class="fas fa-chevron-down custom-select-arrow"></i>
+                  </div>
+                  <div class="custom-select-dropdown hidden">
+                    <div class="custom-select-option text-primary" data-value="long-rains">Long Rains (Mar-May)</div>
+                    <div class="custom-select-option text-primary" data-value="short-rains">Short Rains (Oct-Dec)</div>
+                    <div class="custom-select-option text-primary" data-value="dry-season">Dry Season (with irrigation)
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <button type="button"
+                class="w-full bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 font-semibold"
+                onclick="calculateYield()">
+                Calculate Yield
+              </button>
+            </form>
+          </div>
+
+          <!-- Prediction Results -->
+          <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+            <h3 class="text-lg font-semibold text-primary mb-4">Yield Prediction</h3>
+            <div id="yield-results" class="text-center text-secondary py-8">
+              <i class="fas fa-calculator text-4xl mb-4"></i>
+              <p>Enter your farm details to get yield prediction</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Yield Analysis -->
+      <div class="content-section">
+        <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+          <h3 class="text-lg font-semibold text-primary mb-4">Yield Analysis</h3>
+
+          <!-- Analysis Cards -->
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- CARD ONE -->
+            <div class="text-center p-4 bg-green-51 rounded-lg">
+              <i class="fas fa-arrow-up text-green-600 text-2xl mb-2"></i>
+              <p class="text-sm text-secondary">Expected Increase</p>
+              <p class="text-2xl font-bold text-gray-400" id="expected-increase">0 %</p>
+              <p class="text-xs text-secondary">vs. previous season</p>
+            </div>
+
+            <!-- CARD THREE -->
+            <div class="text-center p-4 bg-purple-51 rounded-lg">
+              <i class="fas fa-coins text-purple-600 text-2xl mb-2"></i>
+              <p class="text-sm text-secondary">Revenue Potential</p>
+              <p class="text-2xl font-bold text-gray-400" id="revenue-potential">KES 0</p>
+              <p class="text-xs text-secondary">estimated total</p>
+            </div>
+
+            <!-- CARD TWO -->
+            <div class="text-center p-4 bg-blue-51 rounded-lg">
+              <i class="fas fa-weight-hanging text-blue-600 text-2xl mb-2"></i>
+              <p class="text-sm text-secondary">Avg. Head Weight</p>
+              <p class="text-2xl font-bold text-gray-400" id="avg-head-weight">0 kg</p>
+              <p class="text-xs text-secondary">per cabbage head</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Yield Trends Chart -->
+      <div class="content-section">
+        <div class="card-bg rounded-xl shadow-sm p-6 border border-primary">
+          <h3 class="text-lg font-semibold text-primary mb-4">Yield Trends (Last 5 Seasons)</h3>
+          <div class="chart-container">
+            <canvas id="yield-chart"></canvas>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Firebase Configuration -->
+  <script src="js/firebase-config.js"></script>
+
+  <!-- Common JavaScript -->
+  <script src="js/common.js"></script>
+
+  <!-- Page-specific JavaScript -->
+  <script src="js/yield-prediction.js"></script>
+
+  <script>
+        // Theme toggle functionality
+          function toggleTheme() {
+            const currentTheme = document.documentElement.getAttribute("data-theme") || "dark";
+            const newTheme = currentTheme === "dark" ? "light" : "dark";
+
+            // Apply theme to document
+            document.documentElement.setAttribute("data-theme", newTheme);
+
+            // Update toggle state for both mobile and desktop
+            const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+            const desktopThemeToggle = document.getElementById('desktop-theme-toggle');
+
+            if (mobileThemeToggle) {
+              void mobileThemeToggle.offsetWidth; // Force reflow
+              if (newTheme === "dark") {
+                mobileThemeToggle.classList.add("active");
+              } else {
+                mobileThemeToggle.classList.remove("active");
+              }
+            }
+
+            if (desktopThemeToggle) {
+              void desktopThemeToggle.offsetWidth; // Force reflow
+              if (newTheme === "dark") {
+                desktopThemeToggle.classList.add("active");
+              } else {
+                desktopThemeToggle.classList.remove("active");
+              }
+            }
+
+            // Save to localStorage
+            localStorage.setItem("theme", newTheme);
+
+            // Save to Firebase if user is logged in
+            const userData = getCurrentUserData();
+            if (userData) {
+              const emailKey = userData.email.replace(/\./g, "_");
+              database.ref("users/" + emailKey).update({ theme: newTheme })
+                .then(() => console.log("Theme saved to Firebase:", newTheme))
+                .catch(error => console.error("Error saving theme to Firebase:", error));
+            }
+          }
+
+          // Get current user data
+          function getCurrentUserData() {
+            try {
+              const userData = localStorage.getItem("userData");
+              return userData ? JSON.parse(userData) : null;
+            } catch (e) {
+              return null;
+            }
+          }
+
+          // Load components
+          document.addEventListener('DOMContentLoaded', function () {
+            // Load navigation
+            fetch('navigation.html')
+              .then(response => response.text())
+              .then(html => {
+                document.getElementById('navigation-container').innerHTML = html;
+              });
+
+            // Load mobile header
+            fetch('mobile-header.html')
+              .then(response => response.text())
+              .then(html => {
+                document.getElementById('mobile-header-container').innerHTML = html;
+
+                // Initialize mobile theme toggle after loading
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                const mobileThemeToggle = document.getElementById('mobile-theme-toggle');
+                if (mobileThemeToggle) {
+                  void mobileThemeToggle.offsetWidth; // Force reflow
+                  if (savedTheme === 'dark') {
+                    mobileThemeToggle.classList.add('active');
+                  } else {
+                    mobileThemeToggle.classList.remove('active');
+                  }
+
+                  mobileThemeToggle.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    toggleTheme();
+                  });
+                }
+              });
+
+            // Load desktop header
+            fetch('desktop-header.html')
+              .then(response => response.text())
+              .then(html => {
+                document.getElementById('desktop-header-container').innerHTML = html;
+
+                // Initialize desktop theme toggle after loading
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                const desktopThemeToggle = document.getElementById('desktop-theme-toggle');
+                if (desktopThemeToggle) {
+                  void desktopThemeToggle.offsetWidth; // Force reflow
+                  if (savedTheme === 'dark') {
+                    desktopThemeToggle.classList.add('active');
+                  } else {
+                    desktopThemeToggle.classList.remove('active');
+                  }
+
+                  desktopThemeToggle.addEventListener('click', function (e) {
+                    e.stopPropagation();
+                    toggleTheme();
+                  });
+                }
+              });
+          });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CropWise - Smart Farming Platform</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+    rel="stylesheet">
+
+  <!-- Firebase SDK (load as regular scripts, not modules) -->
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-database-compat.js"></script>
+
+  <link rel="stylesheet" href="./styles.css">
+</head>
+
+<body data-theme="light">
+  <!-- Theme Toggle Button -->
+  <div class="theme-toggle" id="theme-toggle">
+    <div class="theme-toggle-icon">
+      <i class="fas fa-sun"></i>
+      <i class="fas fa-moon"></i>
+    </div>
+  </div>
+
+  <!-- Enhanced Animated Background Particles -->
+  <div class="particles">
+    <!-- Row 1 -->
+    <div class="particle" style="left: 3%; width: 3px; height: 3px; animation-delay: 0s; animation-duration: 28s;">
+    </div>
+    <div class="particle" style="left: 8%; width: 5px; height: 5px; animation-delay: 1s; animation-duration: 25s;">
+    </div>
+    <div class="particle" style="left: 13%; width: 4px; height: 4px; animation-delay: 2s; animation-duration: 30s;">
+    </div>
+    <div class="particle" style="left: 18%; width: 6px; height: 6px; animation-delay: 3s; animation-duration: 22s;">
+    </div>
+    <div class="particle" style="left: 23%; width: 3px; height: 3px; animation-delay: 4s; animation-duration: 27s;">
+    </div>
+    <div class="particle" style="left: 28%; width: 7px; height: 7px; animation-delay: 5s; animation-duration: 24s;">
+    </div>
+    <div class="particle" style="left: 33%; width: 4px; height: 4px; animation-delay: 6s; animation-duration: 29s;">
+    </div>
+    <div class="particle" style="left: 38%; width: 5px; height: 5px; animation-delay: 7s; animation-duration: 21s;">
+    </div>
+    <div class="particle" style="left: 43%; width: 8px; height: 8px; animation-delay: 8s; animation-duration: 26s;">
+    </div>
+    <div class="particle" style="left: 48%; width: 3px; height: 3px; animation-delay: 9s; animation-duration: 23s;">
+    </div>
+
+    <!-- Row 2 -->
+    <div class="particle" style="left: 53%; width: 6px; height: 6px; animation-delay: 10s; animation-duration: 31s;">
+    </div>
+    <div class="particle" style="left: 58%; width: 4px; height: 4px; animation-delay: 11s; animation-duration: 20s;">
+    </div>
+    <div class="particle" style="left: 63%; width: 7px; height: 7px; animation-delay: 12s; animation-duration: 28s;">
+    </div>
+    <div class="particle" style="left: 68%; width: 3px; height: 3px; animation-delay: 13s; animation-duration: 25s;">
+    </div>
+    <div class="particle" style="left: 73%; width: 5px; height: 5px; animation-delay: 14s; animation-duration: 32s;">
+    </div>
+    <div class="particle" style="left: 78%; width: 8px; height: 8px; animation-delay: 15s; animation-duration: 19s;">
+    </div>
+    <div class="particle" style="left: 83%; width: 4px; height: 4px; animation-delay: 16s; animation-duration: 27s;">
+    </div>
+    <div class="particle" style="left: 88%; width: 6px; height: 6px; animation-delay: 17s; animation-duration: 24s;">
+    </div>
+    <div class="particle" style="left: 93%; width: 3px; height: 3px; animation-delay: 18s; animation-duration: 30s;">
+    </div>
+    <div class="particle" style="left: 97%; width: 5px; height: 5px; animation-delay: 19s; animation-duration: 22s;">
+    </div>
+
+    <!-- Row 3 - Additional particles -->
+    <div class="particle" style="left: 2%; width: 7px; height: 7px; animation-delay: 20s; animation-duration: 26s;">
+    </div>
+    <div class="particle" style="left: 12%; width: 4px; height: 4px; animation-delay: 21s; animation-duration: 33s;">
+    </div>
+    <div class="particle" style="left: 22%; width: 6px; height: 6px; animation-delay: 22s; animation-duration: 18s;">
+    </div>
+    <div class="particle" style="left: 32%; width: 3px; height: 3px; animation-delay: 23s; animation-duration: 29s;">
+    </div>
+    <div class="particle" style="left: 42%; width: 8px; height: 8px; animation-delay: 24s; animation-duration: 21s;">
+    </div>
+    <div class="particle" style="left: 52%; width: 5px; height: 5px; animation-delay: 25s; animation-duration: 35s;">
+    </div>
+    <div class="particle" style="left: 62%; width: 4px; height: 4px; animation-delay: 26s; animation-duration: 17s;">
+    </div>
+    <div class="particle" style="left: 72%; width: 7px; height: 7px; animation-delay: 27s; animation-duration: 31s;">
+    </div>
+    <div class="particle" style="left: 82%; width: 3px; height: 3px; animation-delay: 28s; animation-duration: 23s;">
+    </div>
+    <div class="particle" style="left: 92%; width: 6px; height: 6px; animation-delay: 29s; animation-duration: 28s;">
+    </div>
+  </div>
+
+  <div class="min-h-screen flex items-center justify-center px-4 py-8 relative z-10">
+    <div class="max-w-4xl w-full grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+
+      <!-- Left Side - Branding -->
+      <div class="slide-in-left brand-section-mobile">
+        <div class="mb-8 w-full">
+          <div class="brand-container mb-4">
+            <div class="logo-glow floating-animation">
+              <i class="fas fa-seedling text-5xl text-primary-themed"></i>
+            </div>
+            <div class="brand-text">
+              <h1 class="text-5xl lg:text-6xl font-bold text-primary-themed mb-2 floating-animation mobile-text-center">
+                CropWise
+              </h1>
+            </div>
+          </div>
+
+          <p class="text-xl text-secondary-themed mb-6 mobile-centered-subtitle mobile-text-center">
+            Smart Farming Assistant
+          </p>
+          <p class="text-secondary-themed text-lg leading-relaxed mobile-centered-description mobile-text-center">
+            Revolutionize your farming with advanced insights. Monitor crops, predict yields, and optimize harvests
+            with intelligent technology.
+          </p>
+        </div>
+
+        <!-- Features List -->
+        <div class="space-y-4 hidden lg:block">
+          <div class="flex items-center feature-item">
+            <i class="fas fa-check-circle mr-3"></i>
+            <span>Advanced disease detection</span>
+          </div>
+          <div class="flex items-center feature-item">
+            <i class="fas fa-check-circle mr-3"></i>
+            <span>Real-time weather monitoring</span>
+          </div>
+          <div class="flex items-center feature-item">
+            <i class="fas fa-check-circle mr-3"></i>
+            <span>Smart yield predictions</span>
+          </div>
+          <div class="flex items-center feature-item">
+            <i class="fas fa-check-circle mr-3"></i>
+            <span>Market price analytics</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side - Auth Forms -->
+      <div class="slide-in-right">
+        <div class="glassmorphism rounded-3xl p-8 max-w-md mx-auto">
+          <!-- Success Message (Hidden by default) -->
+          <div id="success-message" class="text-center hidden success-screen">
+            <svg class="success-checkmark" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 52 52">
+              <circle class="success-checkmark-circle" cx="26" cy="26" r="25" fill="none" />
+              <path class="success-checkmark-check" fill="none" d="m14.1 27.2l7.1 7.2 16.7-16.8" />
+            </svg>
+            <h3 class="text-2xl font-bold text-primary-themed mb-2">Welcome to CropWise!</h3>
+            <p class="text-secondary-themed mb-4">Redirecting to your dashboard...</p>
+          </div>
+
+          <!-- Toggle Buttons -->
+          <div id="auth-toggle" class="flex bg-white bg-opacity-10 rounded-full p-1 mb-8">
+            <button id="login-toggle"
+              class="flex-1 py-3 px-6 rounded-full font-semibold transition-all duration-300 toggle-btn-active">
+              Login
+            </button>
+            <button id="register-toggle"
+              class="flex-1 py-3 px-6 rounded-full font-semibold transition-all duration-300 toggle-btn-inactive">
+              Register
+            </button>
+          </div>
+
+          <!-- Login Form -->
+          <div id="login-form" class="form-transition">
+            <h2 class="text-3xl font-bold text-primary-themed mb-6 text-center">Welcome Back</h2>
+
+            <!-- Error/Success Messages -->
+            <div id="login-error" class="error-message"></div>
+            <div id="login-success" class="success-message"></div>
+
+            <form id="loginForm" class="space-y-6">
+              <div class="input-group">
+                <i class="fas fa-envelope input-icon"></i>
+                <input type="email" id="login-email" placeholder="Email Address" required
+                  class="w-full py-4 rounded-xl input-focus focus:outline-none">
+              </div>
+
+              <div class="input-group">
+                <i class="fas fa-lock input-icon"></i>
+                <input type="password" id="login-password" placeholder="Password" required
+                  class="w-full py-4 rounded-xl input-focus focus:outline-none">
+                <i class="fas fa-eye password-toggle" onclick="togglePassword('login-password')"></i>
+              </div>
+
+              <div class="checkbox-container">
+                <input type="checkbox" class="custom-checkbox" id="remember-me">
+                <div class="checkbox-label flex justify-between items-start w-full">
+                  <label for="remember-me" class="text-sm cursor-pointer">Remember me</label>
+                  <a href="#" class="text-sm themed-link">
+                    Forgot Password?
+                  </a>
+                </div>
+              </div>
+
+              <button type="submit" class="w-full text-white font-bold py-4 rounded-xl btn-hover">
+                <i class="fas fa-sign-in-alt mr-2"></i>
+                Sign In
+              </button>
+            </form>
+          </div>
+
+          <!-- Register Form -->
+          <div id="register-form" class="form-transition hidden">
+            <h2 class="text-3xl font-bold text-primary-themed mb-6 text-center">Join CropWise</h2>
+
+            <!-- Error/Success Messages -->
+            <div id="register-error" class="error-message"></div>
+            <div id="register-success" class="success-message"></div>
+
+            <form id="registerForm" class="space-y-4">
+              <div class="grid grid-cols-2 gap-4">
+                <div class="input-group">
+                  <i class="fas fa-user input-icon"></i>
+                  <input type="text" id="first-name" placeholder="First Name" required
+                    class="w-full py-4 rounded-xl input-focus focus:outline-none">
+                </div>
+                <div class="input-group">
+                  <i class="fas fa-user input-icon"></i>
+                  <input type="text" id="last-name" placeholder="Last Name" required
+                    class="w-full py-4 rounded-xl input-focus focus:outline-none">
+                </div>
+              </div>
+
+              <div class="input-group">
+                <i class="fas fa-envelope input-icon"></i>
+                <input type="email" id="register-email" placeholder="Email Address" required
+                  class="w-full py-4 rounded-xl input-focus focus:outline-none">
+              </div>
+
+              <div class="input-group">
+                <i class="fas fa-phone input-icon"></i>
+                <input type="tel" id="phone" placeholder="Phone Number" required
+                  class="w-full py-4 rounded-xl input-focus focus:outline-none">
+              </div>
+
+              <div class="input-group">
+                <i class="fas fa-map-marker-alt input-icon"></i>
+                <div class="custom-select-wrapper">
+                  <div class="custom-select-trigger" id="location-trigger">
+                    <span class="placeholder">Select Location</span>
+                    <i class="fas fa-chevron-down custom-select-arrow"></i>
+                  </div>
+                  <div class="custom-select-dropdown" id="location-dropdown">
+                    <div class="custom-select-option" data-value="">Select Location</div>
+                    <div class="custom-select-option" data-value="nairobi">Nairobi</div>
+                    <div class="custom-select-option" data-value="mombasa">Mombasa</div>
+                    <div class="custom-select-option" data-value="kisumu">Kisumu</div>
+                    <div class="custom-select-option" data-value="nakuru">Nakuru</div>
+                    <div class="custom-select-option" data-value="eldoret">Eldoret</div>
+                    <div class="custom-select-option" data-value="meru">Meru</div>
+                    <div class="custom-select-option" data-value="other">Other</div>
+                  </div>
+                  <input type="hidden" id="location" name="location" required>
+                </div>
+              </div>
+
+              <div class="input-group">
+                <i class="fas fa-lock input-icon"></i>
+                <input type="password" id="register-password" placeholder="Password" required
+                  class="w-full py-4 rounded-xl input-focus focus:outline-none">
+                <i class="fas fa-eye password-toggle" onclick="togglePassword('register-password')"></i>
+              </div>
+
+              <div class="input-group">
+                <i class="fas fa-lock input-icon"></i>
+                <input type="password" id="confirm-password" placeholder="Confirm Password" required
+                  class="w-full py-4 rounded-xl input-focus focus:outline-none">
+                <i class="fas fa-eye password-toggle" onclick="togglePassword('confirm-password')"></i>
+              </div>
+
+              <div class="checkbox-container">
+                <input type="checkbox" id="terms" required class="custom-checkbox">
+                <label for="terms" class="checkbox-label text-sm leading-relaxed">
+                  I agree to the <a href="#" class="themed-link underline">Terms of Service</a>
+                  and <a href="#" class="themed-link underline">Privacy Policy</a>
+                </label>
+              </div>
+
+              <button type="submit" class="w-full text-white font-bold py-4 rounded-xl btn-hover">
+                <i class="fas fa-user-plus mr-2"></i>
+                Create Account
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Firebase Configuration -->
+  <script src="./firebase-config.js"></script>
+
+  <!-- Application JavaScript -->
+  <script src="./app.js"></script>
+</body>
+
+</html>
